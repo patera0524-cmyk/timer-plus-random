@@ -1,0 +1,8 @@
+{
+  "name": "스마트 교실 타이머 & 랜덤 뽑기",
+  "description": "스마트 교실 타이머 및 공정 랜덤 학생·모둠 뽑기 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

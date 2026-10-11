@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트 교실 타이머 & 랜덤 뽑기</title>
+    <meta name="description" content="스마트 교실 타이머 및 공정 랜덤 학생·모둠 뽑기 시스템 (산리오 파스텔 스위츠 타운 에디션)" />
+    <meta property="og:title" content="스마트 교실 타이머 & 랜덤 뽑기" />
+    <meta property="og:description" content="스마트 교실 타이머 및 공정 랜덤 학생·모둠 뽑기 시스템" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-image: url('./src/assets/images/sanrio_sweets_bg_1789827732698.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #3b3338;
+        }
+        .pastel-overlay {
+            background-color: rgba(255, 252, 248, 0.82);
+            backdrop-filter: blur(10px);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1.5px solid rgba(240, 228, 220, 0.85);
+            border-radius: 28px;
+            box-shadow: 0 10px 32px rgba(220, 195, 185, 0.22), 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glass-card:hover {
+            box-shadow: 0 14px 40px rgba(220, 195, 185, 0.32), 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* 세련되고 정돈된 파스텔 톤온톤 버튼 */
+        .btn-pastel-mint {
+            background-color: #C8F0E0;
+            color: #11533e;
+            border: 1.5px solid #a3e2ca;
+            box-shadow: 0 4px 14px rgba(200, 240, 224, 0.5);
+            transition: all 0.2s ease;
+        }
+        .btn-pastel-mint:hover {
+            background-color: #b3ebdc;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(200, 240, 224, 0.7);
+        }
+        .btn-pastel-yellow {
+            background-color: #FFE88A;
+            color: #5c4b07;
+            border: 1.5px solid #f2d765;
+            box-shadow: 0 4px 14px rgba(255, 232, 138, 0.5);
+            transition: all 0.2s ease;
+        }
+        .btn-pastel-yellow:hover {
+            background-color: #ffdf6b;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(255, 232, 138, 0.7);
+        }
+        .btn-pastel-peach {
+            background-color: #FFB088;
+            color: #692909;
+            border: 1.5px solid #f99360;
+            box-shadow: 0 4px 14px rgba(255, 176, 136, 0.5);
+            transition: all 0.2s ease;
+        }
+        .btn-pastel-peach:hover {
+            background-color: #ffa375;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(255, 176, 136, 0.7);
+        }
+        .btn-pastel-white {
+            background-color: #ffffff;
+            color: #443c42;
+            border: 1.5px solid #dfd1c7;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+        .btn-pastel-white:hover {
+            background-color: #faf6f3;
+            border-color: #dccecb;
+            transform: translateY(-1px);
+        }
+
+        /* 크기를 줄였을 때 컨트롤 버튼들이 찌그러지지 않고 잘 보이도록 최적화 */
+        #start-btn, #pause-btn, #stop-btn, #reset-btn {
+            min-height: 44px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease-in-out;
+            user-select: none;
+        }
+        @media (max-width: 640px) {
+            #start-btn, #pause-btn, #stop-btn, #reset-btn {
+                padding: 0.55rem 0.25rem !important;
+                font-size: 0.75rem !important;
+                min-height: 40px;
+                border-radius: 0.75rem !important;
+            }
+        }
+
+        /* 시각 확성기 펄스 및 네온 스타일 */
+        @keyframes notice-breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .notice-pulse {
+            animation: notice-breathe 2s infinite ease-in-out;
+        }
+        .notice-flash {
+            animation: countdown-zoom-flash 1s infinite ease-in-out;
+        }
+
+        /* 종료 3초 전부터 숫자가 커지며 깜빡임 */
+        @keyframes countdown-zoom-flash {
+            0%, 100% {
+                transform: scale(1.18);
+                color: #e63946;
+                text-shadow: 0 0 20px rgba(230, 57, 70, 0.35);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1);
+                color: #ff7b89;
+                text-shadow: none;
+                opacity: 0.55;
+            }
+        }
+        .countdown-urgent {
+            animation: countdown-zoom-flash 0.65s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        /* 부드러운 스크린 플래시 */
+        @keyframes flash-bg {
+            0% { background-color: rgba(255, 176, 136, 0.25); }
+            50% { background-color: rgba(255, 232, 138, 0.35); }
+            100% { background-color: rgba(255, 176, 136, 0.25); }
+        }
+        .screen-flash {
+            animation: flash-bg 0.7s infinite;
+        }
+
+        /* 뽑기 카드 팝업 애니메이션 */
+        @keyframes pop-bounce {
+            0% { transform: scale(0.85); opacity: 0; }
+            60% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: pop-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #e2d2c8;
+            border-radius: 6px;
+        }
+
+        /* =========================================================
+           전체화면 모드 (타이머 / 뽑기) 전광판 스타일 및 초대형 글자 크기
+           ========================================================= */
+        body.timer-fullscreen-active #timer-section,
+        body.draw-fullscreen-active #draw-section {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            z-index: 99999 !important;
+            background: #fffdfa !important;
+            padding: 2rem 3.5rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            overflow: hidden !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            border: none !important;
+        }
+
+        /* 전체화면일 때 타이머 상단 컨테이너 폭 최대화 */
+        body.timer-fullscreen-active #timer-section > div:first-child,
+        body.timer-fullscreen-active #timer-section .w-full.max-w-2xl,
+        body.timer-fullscreen-active #timer-section .w-full.max-w-xl {
+            max-width: 94% !important;
+        }
+
+        /* [타이머 전체화면] "지금은:" 및 활동 문구 초대형 확대 (2~3배 이상) */
+        body.timer-fullscreen-active #activity-input {
+            font-size: 2.25rem !important;
+            line-height: 2.75rem !important;
+            font-weight: 900 !important;
+            color: #2b2227 !important;
+        }
+        body.timer-fullscreen-active .activity-label {
+            font-size: 2.25rem !important;
+            font-weight: 900 !important;
+        }
+        body.timer-fullscreen-active .activity-label svg,
+        body.timer-fullscreen-active .activity-label i {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+        }
+        body.timer-fullscreen-active .activity-preset-btn {
+            font-size: 1.35rem !important;
+            padding: 0.65rem 1.6rem !important;
+            font-weight: 800 !important;
+            border-radius: 9999px !important;
+        }
+
+        /* [타이머 전체화면] "여유로운 진행 중" 배지 및 텍스트 초대형 확대 (2~3배) */
+        body.timer-fullscreen-active #timer-status-badge {
+            font-size: 2rem !important;
+            padding: 0.85rem 2.75rem !important;
+            border-width: 3px !important;
+            border-radius: 9999px !important;
+            margin-top: 2rem !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+        }
+        body.timer-fullscreen-active #timer-status-badge svg,
+        body.timer-fullscreen-active #timer-status-badge i {
+            width: 2.25rem !important;
+            height: 2.25rem !important;
+        }
+        body.timer-fullscreen-active #timer-status-text {
+            font-size: 2rem !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.02em !important;
+        }
+
+        /* [타이머 전체화면] 타이머 숫자 및 SVG */
+        body.timer-fullscreen-active #timer-display {
+            font-size: 11rem !important;
+            line-height: 1 !important;
+        }
+        body.timer-fullscreen-active #timer-section svg.transform {
+            width: 34rem !important;
+            height: 34rem !important;
+        }
+
+        /* [타이머 전체화면] 하단 프리셋 및 컨트롤 버튼 */
+        body.timer-fullscreen-active .preset-btn,
+        body.timer-fullscreen-active #custom-time-btn {
+            font-size: 1.35rem !important;
+            padding: 0.75rem 1.6rem !important;
+            font-weight: 800 !important;
+        }
+        body.timer-fullscreen-active #start-btn,
+        body.timer-fullscreen-active #pause-btn,
+        body.timer-fullscreen-active #stop-btn,
+        body.timer-fullscreen-active #reset-btn {
+            font-size: 1.5rem !important;
+            padding: 1.25rem 1rem !important;
+            border-radius: 1.25rem !important;
+        }
+
+        /* [뽑기 전체화면] 전광판 스타일 */
+        body.draw-fullscreen-active #draw-section > div {
+            max-width: 92% !important;
+            width: 92% !important;
+            margin: 0 auto !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+        }
+        body.draw-fullscreen-active #mission-card {
+            height: 60vh !important;
+            max-height: 600px !important;
+            min-height: 380px !important;
+            padding: 1.25rem 1.5rem !important;
+        }
+        body.draw-fullscreen-active #result-name-text {
+            font-size: 4.8rem !important;
+            line-height: 1.15 !important;
+            margin: 0.5rem 0 !important;
+            font-weight: 950 !important;
+        }
+        body.draw-fullscreen-active #result-villager-info {
+            font-size: 1.3rem !important;
+            padding: 0.35rem 1.6rem !important;
+            margin-bottom: 0.4rem !important;
+        }
+        body.draw-fullscreen-active #result-tagline {
+            font-size: 1.6rem !important;
+            padding: 0.45rem 2rem !important;
+            font-weight: 900 !important;
+            margin-top: 0.4rem !important;
+        }
+        body.draw-fullscreen-active #draw-result .relative > div {
+            width: 9.5rem !important;
+            height: 9.5rem !important;
+        }
+        body.draw-fullscreen-active #mission-text {
+            font-size: 3.25rem !important;
+            line-height: 1.2 !important;
+        }
+        body.draw-fullscreen-active #draw-placeholder span.text-3xl,
+        body.draw-fullscreen-active #draw-placeholder span.text-4xl {
+            font-size: 5rem !important;
+        }
+        body.draw-fullscreen-active #draw-placeholder .w-18,
+        body.draw-fullscreen-active #draw-placeholder .w-22 {
+            width: 8rem !important;
+            height: 8rem !important;
+        }
+        body.draw-fullscreen-active #draw-btn {
+            font-size: 2.25rem !important;
+            padding: 1.5rem !important;
+            border-radius: 1.5rem !important;
+        }
+        body.draw-fullscreen-active #mode-student-btn,
+        body.draw-fullscreen-active #mode-group-btn {
+            font-size: 1.5rem !important;
+            padding: 1rem !important;
+        }
+        body.draw-fullscreen-active #status-count-text,
+        body.draw-fullscreen-active #card-reset-btn {
+            font-size: 1.4rem !important;
+        }
+
+                /* 전체화면 시 헤더 숨김 및 컴팩트한 기본 화면 돌아가기 버튼 */
+        body.timer-fullscreen-active header,
+        body.draw-fullscreen-active header {
+            display: none !important;
+        }
+
+        .fullscreen-exit-mode-btn {
+            background-color: #fff !important;
+            color: #4a4046 !important;
+            border: 2px solid #e4d8cf !important;
+            padding: 0.5rem 1rem !important;
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 9999px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.4rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        @media (min-width: 768px) {
+            .fullscreen-exit-mode-btn {
+                font-size: 0.875rem !important;
+                padding: 0.5rem 1.2rem !important;
+            }
+        }
+        .fullscreen-exit-mode-btn:hover {
+            background-color: #fbf7f4 !important;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col justify-between select-none">
+
+    <div class="absolute inset-0 pastel-overlay pointer-events-none z-0"></div>
+
+    <!-- 상단 고급 헤더 -->
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-[#ebdcd2] px-6 py-3.5 flex items-center justify-between shrink-0 z-20 shadow-xs">
+        <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-2xl bg-[#FFE88A] border border-[#f5de7a] flex items-center justify-center text-xl shadow-xs">
+                🏫
+            </div>
+            <div>
+                <h1 class="text-base md:text-lg font-black text-[#3d3339] tracking-tight flex items-center gap-2">
+                    스마트 교실 타이머
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dcf5e6] text-[#1e5a37] border border-[#a2e6b9]">동물의 숲 에디션 🍃</span>
+                </h1>
+                <p class="text-xs text-[#7d7077]">수업 집중 타이머 & 동물의 숲 랜덤 뽑기</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2.5">
+            <button id="fullscreen-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-4 py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
+                <i data-lucide="maximize" class="w-4 h-4 text-[#8a7a83]"></i>
+                <span class="hidden sm:inline">전체화면</span>
+            </button>
+            <button id="settings-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-4 py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
+                <i data-lucide="settings" class="w-4 h-4 text-[#8a7a83]"></i>
+                <span>항목 설정</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 메인 대시보드 영역 -->
+    <main class="relative z-10 flex-1 w-full h-[calc(100vh-73px-48px)] p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch overflow-hidden max-w-[1440px] mx-auto">
+        
+        <!-- 좌측: 타이머 및 컨트롤 섹션 -->
+        <section id="timer-section" class="lg:col-span-8 flex flex-col items-center justify-between glass-card p-4 sm:p-5 md:p-6 lg:p-7 h-full overflow-y-auto transition-all duration-300">
+            
+            <!-- 활성화된 시각 확성기 상단 띠 배너 (글로 전달하는 조용한 안내) -->
+            <div id="active-notice-banner" class="hidden w-full max-w-2xl mb-2 px-3.5 py-2 bg-gradient-to-r from-[#ffeaa7] to-[#ffd3b6] border-2 border-[#fff3cc] rounded-2xl shadow-xs flex items-center justify-between notice-pulse shrink-0">
+                <div class="flex items-center gap-2 overflow-hidden flex-1 mr-2">
+                    <span class="text-lg shrink-0">📢</span>
+                    <span id="active-notice-banner-text" class="font-black text-xs sm:text-sm md:text-base text-[#4a2e10] truncate">조용히 집중해주세요 🤫</span>
+                </div>
+                <button id="close-notice-banner-btn" class="text-[11px] font-bold bg-white/90 hover:bg-white text-[#633e14] px-2.5 py-1 rounded-full shrink-0 shadow-2xs cursor-pointer transition">
+                    안내 해제 ✕
+                </button>
+            </div>
+
+            <!-- 타이머 섹션 상단 헤더 (전체화면 버튼 포함) -->
+            <div class="w-full max-w-2xl flex items-center justify-between mb-1.5 shrink-0">
+                <div class="flex items-center gap-2 font-black text-[#3d3339] text-sm md:text-base">
+                    <i data-lucide="clock" class="w-4 h-4 md:w-5 md:h-5 text-[#11533e]"></i> 집중 교실 타이머
+                </div>
+                <button id="timer-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
+                    <span>🔍 타이머 전체화면</span>
+                </button>
+            </div>
+
+            <!-- 상단 바: 지금은 입력 & 활동 프리셋 -->
+            <div class="w-full max-w-2xl flex flex-col space-y-2 shrink-0">
+                <!-- 활동 이름 입력 바 -->
+                <div class="w-full flex items-center bg-white/95 border-2 border-[#eee3da] rounded-2xl px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#C8F0E0] transition">
+                    <span class="activity-label text-[#4a4046] font-bold text-xs sm:text-sm md:text-base mr-2.5 shrink-0 flex items-center gap-1">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 md:w-4 md:h-4 text-[#FFB088]"></i> 지금은:
+                    </span>
+                    <input type="text" id="activity-input" placeholder="예: 수학 익힘책 풀이 및 모둠 발표" class="w-full bg-transparent text-xs sm:text-sm md:text-base font-semibold text-[#3b3338] placeholder-[#a698a0] focus:outline-none">
+                </div>
+
+                <!-- 상단 활동 프리셋 5개 (세련되고 차분한 톤온톤 파스텔) -->
+                <div class="w-full flex flex-nowrap overflow-x-auto pb-0.5 gap-1.5 sm:gap-2 justify-start md:justify-center">
+                    <button class="activity-preset-btn shrink-0 bg-white hover:bg-[#F8F5F1] text-[#4f444b] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 border border-[#e8ded6] cursor-pointer shadow-2xs" data-text="쉬는 시간">☕ 쉬는 시간</button>
+                    <button class="activity-preset-btn shrink-0 bg-white hover:bg-[#F8F5F1] text-[#4f444b] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 border border-[#e8ded6] cursor-pointer shadow-2xs" data-text="중간 놀이 시간">🎈 중간 놀이 시간</button>
+                    <button class="activity-preset-btn shrink-0 bg-white hover:bg-[#F8F5F1] text-[#4f444b] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 border border-[#e8ded6] cursor-pointer shadow-2xs" data-text="점심 시간">🍱 점심 시간</button>
+                    <button class="activity-preset-btn shrink-0 bg-white hover:bg-[#F8F5F1] text-[#4f444b] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 border border-[#e8ded6] cursor-pointer shadow-2xs" data-text="활동 시간">📖 활동 시간</button>
+                    <button class="activity-preset-btn shrink-0 bg-white hover:bg-[#F8F5F1] text-[#4f444b] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 border border-[#e8ded6] cursor-pointer shadow-2xs" data-text="평가 시간">✏️ 평가 시간</button>
+                </div>
+            </div>
+
+            <!-- 중앙 타이머 및 SVG 원형 프로그레스 바 (화면 크기를 줄여도 버튼이 잘 보이도록 반응형 크기 최적화) -->
+            <div class="relative flex items-center justify-center my-auto py-1 sm:py-2 shrink-0">
+                <svg class="w-[min(54vw,14rem,28vh)] h-[min(54vw,14rem,28vh)] sm:w-[min(48vw,17rem,32vh)] sm:h-[min(48vw,17rem,32vh)] md:w-[min(44vw,20rem,36vh)] md:h-[min(44vw,20rem,36vh)] lg:w-[min(38vw,23rem,40vh)] lg:h-[min(38vw,23rem,40vh)] transform -rotate-90" viewBox="0 0 500 500">
+                    <circle cx="250" cy="250" r="220" stroke="#f5ede7" stroke-width="26" fill="none" />
+                    <circle id="progress-bar" cx="250" cy="250" r="220" stroke="#C8F0E0" stroke-width="26" fill="none" stroke-linecap="round" stroke-dasharray="1382.3" stroke-dashoffset="0" class="transition-all duration-300 ease-linear" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <div id="timer-display-container">
+                        <div id="timer-display" class="font-mono text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#382f35] tracking-wider transition-all duration-200">05:00</div>
+                    </div>
+                    <!-- 진행 상태 배지 (50%이상: #C8F0E0, 50~20%: #FFE88A, 20%이하: #FFB088) -->
+                    <div id="timer-status-badge" class="text-xs sm:text-sm font-bold mt-1.5 sm:mt-2 px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full shadow-2xs border transition-all duration-300 bg-[#C8F0E0] text-[#11533e] border-[#b0e6d2] flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> <span id="timer-status-text">여유로운 진행 중</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 하단 타이머 컨트롤 및 시간 프리셋 (크기를 줄여도 한눈에 잘 보이도록 개선) -->
+            <div class="w-full max-w-xl flex flex-col space-y-2.5 sm:space-y-3 shrink-0">
+                <!-- 시간 프리셋 버튼 그룹: 1분, 3분, 5분, 10분, 15분, 20분(추가), 직접입력 -->
+                <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="60">1분</button>
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="180">3분</button>
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="300">5분</button>
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="600">10분</button>
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-medium text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="900">15분</button>
+                    <button class="preset-btn bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-bold text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs" data-time="1200">20분</button>
+                    <button id="custom-time-btn" class="bg-white hover:bg-[#fff9f4] text-[#692909] border border-[#fca174] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-semibold text-xs md:text-sm transition active:scale-95 cursor-pointer shadow-2xs">직접입력</button>
+                </div>
+
+                <!-- 2. 컨트롤 버튼 4개: [▶ 시작] [⏸ 일시정지] [⏹ 정지] [🔄 초기화] (창 크기를 줄여도 항상 선명하고 또렷하게 표시) -->
+                <div class="grid grid-cols-4 gap-1.5 sm:gap-2.5 w-full">
+                    <!-- 시작 버튼: 민트 #C8F0E0 -->
+                    <button id="start-btn" class="btn-pastel-mint font-black py-2.5 sm:py-3.5 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base cursor-pointer shadow-xs min-w-0">
+                        <span class="text-xs sm:text-sm shrink-0">▶</span><span class="truncate">시작</span>
+                    </button>
+                    <!-- 일시정지 버튼: 노랑 #FFE88A -->
+                    <button id="pause-btn" class="btn-pastel-yellow font-black py-2.5 sm:py-3.5 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base cursor-pointer shadow-xs min-w-0">
+                        <span class="text-xs sm:text-sm shrink-0">⏸</span><span class="truncate">일시정지</span>
+                    </button>
+                    <!-- 정지 버튼: 피치 #FFB088 -->
+                    <button id="stop-btn" class="btn-pastel-peach font-black py-2.5 sm:py-3.5 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base cursor-pointer shadow-xs min-w-0">
+                        <span class="text-xs sm:text-sm shrink-0">⏹</span><span class="truncate">정지</span>
+                    </button>
+                    <!-- 초기화 버튼: 화이트 베이지 -->
+                    <button id="reset-btn" class="btn-pastel-white font-black py-2.5 sm:py-3.5 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition active:scale-95 flex items-center justify-center gap-1 sm:gap-1.5 text-xs sm:text-sm md:text-base cursor-pointer shadow-xs min-w-0">
+                        <span class="text-xs sm:text-sm shrink-0">🔄</span><span class="truncate">초기화</span>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 우측: 랜덤 뽑기 통합 섹션 (학생/모둠 뽑기 + 귀여운 이미지 표시) -->
+        <section id="draw-section" class="lg:col-span-4 flex flex-col justify-between glass-card p-5 md:p-8 h-full overflow-y-auto transition-all duration-300">
+            
+            <div class="flex flex-col h-full justify-between">
+                <div>
+                    <!-- 카드 상단 타이틀 및 모드 뱃지 -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-base md:text-lg font-black text-[#3d3339] flex items-center space-x-2">
+                            <i data-lucide="dice-5" class="w-5 h-5 text-[#FFB088]"></i>
+                            <span>랜덤 뽑기</span>
+                        </h2>
+                        <div class="flex items-center space-x-2">
+                            <span id="mode-badge" class="text-xs bg-white border border-[#e4d8cf] text-[#4a4046] font-bold px-3 py-1 rounded-full shadow-2xs">👤 학생 모드</span>
+                            <button id="draw-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
+                                <span>🔍 뽑기 전체화면</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 모드 선택 버튼 [👤 학생] [👥 모둠] -->
+                    <div class="grid grid-cols-2 gap-2 mb-3.5">
+                        <button id="mode-student-btn" class="btn-pastel-mint font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer">
+                            <i data-lucide="user" class="w-4 h-4"></i><span>학생</span>
+                        </button>
+                        <button id="mode-group-btn" class="bg-white hover:bg-[#faf5f1] text-[#4a4046] border border-[#e4d8cf] font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer shadow-2xs">
+                            <i data-lucide="users" class="w-4 h-4 text-[#8a7a83]"></i><span>모둠</span>
+                        </button>
+                    </div>
+
+                    <!-- 남은 인원 / 모둠 현황 및 수동 초기화 -->
+                    <div class="flex items-center justify-between text-xs text-[#7d7077] mb-3 px-1">
+                        <span id="status-count-text" class="font-medium">남은 인원: 17명 / 전체 17명</span>
+                        <button id="card-reset-btn" class="text-[#c45e2c] hover:underline font-bold cursor-pointer flex items-center gap-1">
+                            <i data-lucide="refresh-cw" class="w-3 h-3"></i> 남은 목록 초기화
+                        </button>
+                    </div>
+
+                    <!-- 랜덤 뽑기 디스플레이 카드 (학생 이름과 함께 동물의 숲 인기 주민 사진이 나오는 영역) -->
+                    <div id="mission-card" class="relative w-full min-h-[19.5rem] md:min-h-[22rem] h-auto bg-gradient-to-b from-white to-[#fbf8f5] border-2 border-[#ebdcd2] rounded-3xl flex flex-col items-center justify-center p-3.5 sm:p-4 text-center shadow-xs cursor-pointer hover:border-[#67b579] transition-all transform hover:scale-[1.01] overflow-hidden">
+                        
+                        <!-- 초기 플레이스홀더 뷰 -->
+                        <div id="draw-placeholder" class="flex flex-col items-center justify-center transition-opacity duration-300 py-3">
+                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#e8f8ed] border-2 border-[#b6e8c4] flex items-center justify-center mb-2.5 shadow-inner">
+                                <span class="text-3xl md:text-4xl animate-bounce">🎤</span>
+                            </div>
+                            <span id="mission-text" class="text-xl md:text-2xl font-black text-[#3d3339] tracking-wide">동물의 숲 주민과 함께 뽑기!</span>
+                            <span class="text-xs text-[#8a7b84] mt-2 font-medium">카드를 누르거나 아래 버튼을 클릭하세요</span>
+                        </div>
+
+                        <!-- 뽑기 결과 뷰 (동물의 숲 인기 주민 캐릭터 사진 + 학생/모둠 이름) -->
+                        <div id="draw-result" class="hidden w-full flex flex-col items-center justify-center py-1">
+                            <div class="relative mb-1.5 shrink-0">
+                                <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-3xl overflow-hidden border-2 md:border-3 border-[#a7e2b7] shadow-md bg-gradient-to-b from-[#f3faf5] to-white p-1 flex items-center justify-center">
+                                    <img id="result-avatar-img" src="/villagers/raymond.png" alt="동물의 숲 주민" class="w-full h-full object-contain filter drop-shadow-md transition-transform duration-300 transform hover:scale-105" />
+                                </div>
+                                <span id="result-badge-emoji" class="absolute -top-1.5 -right-1.5 text-xl drop-shadow-sm">✨</span>
+                            </div>
+                            <div id="result-villager-info" class="text-xs md:text-sm font-extrabold text-[#1a5b3a] bg-[#e6f7ec] px-3 py-0.5 rounded-full border border-[#a2e6b9] mb-1 flex items-center gap-1.5 shadow-2xs shrink-0">
+                                <span>🍃 함께 뽑힌 친구:</span>
+                                <span id="result-villager-name" class="font-black text-[#11532e]">토타케케 (강아지) 🎸</span>
+                            </div>
+                            <div id="result-name-text" class="text-3xl sm:text-4xl md:text-5xl font-black text-[#3d3339] tracking-tight my-0.5 leading-tight shrink-0">
+                                강래연
+                            </div>
+                            <div id="result-tagline" class="text-xs md:text-sm font-bold text-[#1a5b3a] bg-[#d9f5e4] px-3 py-0.5 rounded-full border border-[#a2e6b9] shadow-2xs mt-0.5 shrink-0">
+                                오늘의 반짝이는 주인공! 🌟
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 하단 실행 버튼 -->
+                <div class="mt-4">
+                    <button id="draw-btn" class="w-full btn-pastel-peach font-black py-3.5 md:py-4 px-6 rounded-2xl shadow-md transition active:scale-95 text-base md:text-lg flex items-center justify-center space-x-2 cursor-pointer">
+                        <i data-lucide="dice-5" class="w-5 h-5 animate-spin" style="animation-duration: 3s;"></i>
+                        <span>랜덤 뽑기 실행</span>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 종료 시 팝업 오버레이 -->
+    <div id="finish-modal" class="fixed inset-0 bg-[#3d3339]/40 backdrop-blur-xs z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300 p-4">
+        <div id="modal-box" class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border-2 border-[#ebdcd2] text-center transform scale-95 transition-transform duration-300">
+            <div class="w-16 h-16 bg-[#FFB088]/25 text-[#c45e2c] rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                🚨
+            </div>
+            <h3 class="text-2xl font-extrabold text-[#3d3339] mb-1">시간 종료!</h3>
+            <p class="text-xl font-bold text-[#c45e2c] mb-6">"선생님을 보세요!"</p>
+            <div class="flex space-x-3">
+                <button id="extend-btn" class="flex-1 btn-pastel-peach font-bold py-3.5 px-4 rounded-2xl shadow transition text-base cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="plus" class="w-5 h-5"></i> 연장 +1분
+                </button>
+                <button id="close-modal-btn" class="flex-1 btn-pastel-white font-bold py-3.5 px-4 rounded-2xl transition text-base cursor-pointer flex items-center justify-center gap-1.5">
+                    <i data-lucide="x" class="w-5 h-5"></i> 닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 항목 설정 모달 -->
+    <div id="settings-modal" class="fixed inset-0 bg-[#3d3339]/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl border-2 border-[#ebdcd2] flex flex-col max-h-[88vh]">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-[#3d3339] flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-[#FFB088]"></i>
+                    스마트 교실 항목 설정
+                </h3>
+                <button id="settings-close-btn" class="text-[#7d7077] hover:text-[#3d3339] p-1.5 rounded-full hover:bg-[#faf6f3] transition cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- 탭 전환 버튼 [명단 설정] [동물의 숲 주민] -->
+            <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#f7f2ed] rounded-2xl mb-4 shrink-0">
+                <button id="settings-tab-list-btn" class="py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer">
+                    👥 학생 명단 & 모둠
+                </button>
+                <button id="settings-tab-villagers-btn" class="py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer">
+                    🍃 동물의 숲 주민 (27인)
+                </button>
+            </div>
+            
+            <!-- 탭 1: 학생 명단 & 모둠 수 -->
+            <div id="settings-tab-list" class="flex-1 flex flex-col overflow-y-auto">
+                <div class="mb-4">
+                    <label class="block text-xs font-bold text-[#7d7077] mb-1.5">👥 총 모둠 개수 설정</label>
+                    <input type="number" id="group-count-input" min="1" max="20" value="5" class="w-full p-3 border-2 border-[#ebdcd2] rounded-2xl font-bold text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb]">
+                </div>
+
+                <div class="flex-1 flex flex-col mb-4">
+                    <label class="block text-xs font-bold text-[#7d7077] mb-1.5">👤 학생 명단 편집 (줄바꿈으로 구분)</label>
+                    <textarea id="missions-textarea" class="w-full flex-1 p-4 border-2 border-[#ebdcd2] rounded-2xl font-medium text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb] resize-none text-sm leading-relaxed" rows="7"></textarea>
+                    <p class="text-xs text-[#a698a0] mt-1.5">※ 줄바꿈을 기준으로 학생 이름이 등록되며, 남은 뽑기 목록이 새로고침됩니다.</p>
+                </div>
+
+                <div class="flex space-x-3 shrink-0">
+                    <button id="save-missions-btn" class="flex-1 btn-pastel-mint font-bold py-3 px-4 rounded-2xl shadow transition cursor-pointer">저장하기</button>
+                    <button id="settings-cancel-btn" class="btn-pastel-white font-bold py-3 px-4 rounded-2xl transition cursor-pointer">취소</button>
+                </div>
+            </div>
+
+            <!-- 탭 2: 동물의 숲 주민 라인업 -->
+            <div id="settings-tab-villagers" class="hidden flex-1 flex flex-col overflow-y-auto">
+                <p class="text-xs text-[#7d7077] mb-2.5">함께 뽑기에 등장하는 동물의 숲 최고 인기 주민 27인 라인업입니다 🍀</p>
+                <div id="villagers-roster-grid" class="grid grid-cols-3 gap-2 overflow-y-auto pr-1 pb-3 max-h-[360px]">
+                    <!-- JS로 동적 생성 -->
+                </div>
+                <div class="pt-3 border-t border-[#ebdcd2] shrink-0">
+                    <button id="villagers-tab-close-btn" class="w-full btn-pastel-mint font-bold py-2.5 rounded-2xl cursor-pointer">확인</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 직접 시간 입력 모달 -->
+    <div id="custom-time-modal" class="fixed inset-0 bg-[#3d3339]/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border-2 border-[#ebdcd2] text-center">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2 text-[#3d3339] font-bold text-base">
+                    <i data-lucide="clock" class="w-5 h-5 text-[#FFB088]"></i> 직접 시간 설정
+                </div>
+                <button id="custom-time-close-btn" class="text-[#7d7077] hover:text-[#3d3339]">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-[#7d7077] mb-4">원하시는 시간을 분 단위로 입력하세요.</p>
+            <input type="number" id="custom-minutes-input" min="1" max="180" value="5" class="w-full text-center text-3xl font-bold py-3 border-2 border-[#ebdcd2] rounded-2xl mb-6 focus:outline-none focus:border-[#C8F0E0] font-mono bg-[#fffdfb] text-[#3d3339]">
+            <div class="flex space-x-3">
+                <button id="custom-time-save-btn" class="flex-1 btn-pastel-peach font-bold py-3 rounded-2xl shadow cursor-pointer">확인</button>
+                <button id="custom-time-cancel-btn" class="flex-1 btn-pastel-white font-bold py-3 rounded-2xl cursor-pointer">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 기본 화면 오른쪽 아래 플로팅 확성기 버튼 (목소리가 아닌 글로 안내하는 시각 확성기) -->
+    <div class="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40">
+        <button id="megaphone-fab-btn" title="조용한 화면 확성기 (큰 글씨 안내판)" class="group flex items-center gap-2.5 bg-gradient-to-r from-[#ffeaa7] via-[#ffd3b6] to-[#ffb68c] hover:from-[#ffe28b] hover:to-[#ffa775] text-[#4a2e10] font-black px-4 py-3 sm:px-5 sm:py-3.5 rounded-full shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer border-2 border-white/95">
+            <span class="text-xl sm:text-2xl group-hover:rotate-12 transition-transform duration-300 drop-shadow-xs">📢</span>
+            <div class="text-left flex flex-col">
+                <span class="font-black text-xs sm:text-sm leading-tight text-[#422509]">화면 확성기</span>
+                <span class="text-[10px] text-[#784617] font-semibold leading-tight">글로 전하는 조용한 안내</span>
+            </div>
+            <span class="hidden md:inline-flex bg-white/80 text-[#5e320d] text-[10px] font-extrabold px-2 py-0.5 rounded-full shadow-2xs">안내판 열기</span>
+        </button>
+    </div>
+
+    <!-- 시각 확성기 (조용한 교실 큰 글씨 안내판) 모달 -->
+    <div id="announcement-modal" class="fixed inset-0 bg-[#3d3339]/50 backdrop-blur-xs z-50 flex items-center justify-center hidden p-3 sm:p-5">
+        <div class="bg-white rounded-3xl p-5 sm:p-7 max-w-2xl w-full shadow-2xl border-2 border-[#ebdcd2] flex flex-col max-h-[92vh] overflow-y-auto">
+            
+            <!-- 상단 헤더 -->
+            <div class="flex items-center justify-between pb-3 border-b border-[#ebdcd2] mb-3 shrink-0">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-[#ffeaa7] border border-[#f5de7a] flex items-center justify-center text-xl shadow-2xs">
+                        📢
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-black text-[#3d3339] flex items-center gap-2">
+                            화면 확성기 (조용한 큰 글씨 안내)
+                        </h3>
+                        <p class="text-xs text-[#7d7077]">목소리 대신 세련되고 큰 글씨로 학생들에게 전달하세요</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="fullscreen-announcement-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
+                        <span>📺 전광판 전체화면</span>
+                    </button>
+                    <button id="announcement-close-btn" class="text-[#7d7077] hover:text-[#3d3339] p-1.5 rounded-full hover:bg-[#faf6f3] transition cursor-pointer">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 실시간 대형 글씨 미리보기 화면 -->
+            <div class="mb-4 shrink-0">
+                <div class="flex items-center justify-between mb-1.5 px-1">
+                    <span class="text-xs font-bold text-[#7d7077]">👁️ 대형 글씨 디스플레이 (학생들에게 보이는 화면)</span>
+                    <div class="flex items-center gap-1.5">
+                        <button id="notice-sound-btn" class="text-xs font-bold text-[#205b38] bg-[#e8f8ed] hover:bg-[#d8f2e1] px-2.5 py-0.5 rounded-full border border-[#b2e8c5] transition cursor-pointer flex items-center gap-1">
+                            <span>🔔 띵동~ 주목벨</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 디스플레이 카드 (테마에 따라 스타일 변환) -->
+                <div id="notice-display-box" class="w-full min-h-[140px] sm:min-h-[170px] max-h-[220px] rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-inner border-2 border-[#b5e7c6] bg-gradient-to-br from-[#f1faf4] to-[#e6f7ec] transition-all duration-300 relative overflow-hidden">
+                    <div id="notice-display-badge" class="absolute top-2.5 left-3 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/80 text-[#1e5a37] border border-[#b6e8c4] shadow-2xs flex items-center gap-1">
+                        <span>🍃 교실 안내판</span>
+                    </div>
+                    <div id="notice-display-text" class="font-black text-2xl sm:text-3xl md:text-4xl text-[#14532d] leading-snug tracking-tight transition-all duration-200 break-keep break-words w-full">
+                        조용히 집중해주세요 🤫
+                    </div>
+                </div>
+
+                <!-- 디스플레이 옵션 바: 테마 색상 / 글자 크기 / 깜빡임 토글 -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mt-2 px-1">
+                    <!-- 테마 선택 -->
+                    <div class="flex items-center gap-1">
+                        <span class="text-[11px] font-bold text-[#8a7b84] mr-1">테마:</span>
+                        <button class="notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#a2e6b9] bg-[#dcf5e6] text-[#1b5935] cursor-pointer" data-theme="forest">🍃 동물의 숲</button>
+                        <button class="notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#eee3da] bg-white text-[#5c4b07] hover:bg-[#fff9df] cursor-pointer" data-theme="yellow">☀️ 옐로우</button>
+                        <button class="notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#eee3da] bg-white text-[#2a2228] hover:bg-[#201c22] hover:text-white cursor-pointer" data-theme="dark">🌙 암전 다크</button>
+                        <button class="notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#eee3da] bg-white text-[#783615] hover:bg-[#fff0e6] cursor-pointer" data-theme="peach">🚨 피치</button>
+                    </div>
+
+                    <!-- 글자 크기 및 깜빡임 -->
+                    <div class="flex items-center gap-1.5">
+                        <div class="flex items-center bg-[#f8f4f0] rounded-full p-0.5 border border-[#e4d8cf]">
+                            <button class="notice-size-btn text-[11px] font-bold px-2 py-0.5 rounded-full bg-white text-[#3d3339] shadow-2xs cursor-pointer" data-size="normal">보통</button>
+                            <button class="notice-size-btn text-[11px] font-bold px-2 py-0.5 rounded-full text-[#7d7077] cursor-pointer" data-size="large">크게</button>
+                            <button class="notice-size-btn text-[11px] font-bold px-2 py-0.5 rounded-full text-[#7d7077] cursor-pointer" data-size="giant">초대형</button>
+                        </div>
+                        <button id="toggle-pulse-btn" class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#f1fbf4] text-[#1e5a37] border border-[#bce8cb] cursor-pointer">
+                            ✨ 펄스 강조: 켜짐
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 빠른 원클릭 교실 상황 안내 프리셋 8종 -->
+            <div class="mb-3.5 shrink-0">
+                <label class="block text-xs font-bold text-[#7d7077] mb-1.5 px-1">⚡ 원클릭 빠른 안내 프리셋 (자주 쓰는 교실 문구)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="조용히 집중해주세요 🤫">
+                        🤫 조용히 집중하기
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="개별 문제 풀이 시간입니다 📝">
+                        📝 문제 풀이 시간
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="모둠원과 소곤소곤 상의하세요 🤝">
+                        🤝 모둠원과 상의하기
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="질문이 있으면 조용히 손을 들어주세요 ✋">
+                        ✋ 조용히 손들기
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="시간이 얼마 남지 않았어요! 서둘러 마무리하세요 ⏰">
+                        ⏰ 서둘러 마무리하기
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="교과서와 학습지를 책상 위에 준비하세요 📚">
+                        📚 교과서/학습지 준비
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="다 한 사람은 조용히 독서하거나 기다려주세요 💡">
+                        💡 완료 후 조용히 독서
+                    </button>
+                    <button class="quick-preset-btn text-left text-xs font-bold p-2 rounded-xl bg-[#fffdfb] hover:bg-[#fbf7f4] border border-[#ebdcd2] hover:border-[#b5e7c6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs truncate" data-msg="책상 위를 깨끗이 정돈해주세요 🧹">
+                        🧹 책상 위 정돈하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 직접 입력 영역 -->
+            <div class="mb-4 flex-1 flex flex-col">
+                <div class="flex items-center justify-between mb-1 px-1">
+                    <label class="text-xs font-bold text-[#7d7077]">✍️ 안내 문구 직접 입력</label>
+                    <button id="clear-notice-text-btn" class="text-xs text-[#b85429] hover:underline cursor-pointer">입력 지우기</button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="custom-notice-input" value="조용히 집중해주세요 🤫" placeholder="전달할 안내 문구를 입력하세요 (예: 5교시 준비물 챙기기)" class="w-full p-3.5 border-2 border-[#ebdcd2] rounded-2xl font-bold text-sm md:text-base text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb] shadow-2xs">
+                </div>
+            </div>
+
+            <!-- 하단 액션 버튼들 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2 border-t border-[#ebdcd2] shrink-0">
+                <button id="set-banner-notice-btn" class="btn-pastel-yellow font-black py-3 px-4 rounded-2xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                    <span>📌 타이머 상단 띠 배너로 띄우기</span>
+                </button>
+                <button id="launch-fullscreen-board-btn" class="btn-pastel-mint font-black py-3 px-4 rounded-2xl shadow-xs transition active:scale-95 flex items-center justify-center gap-1.5 text-xs sm:text-sm cursor-pointer">
+                    <span>📺 초대형 전체화면 전광판 모드</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 초대형 전체화면 전광판 오버레이 (교실 TV / 프로젝터용 초대형 폰트 전광판) -->
+    <div id="announcement-fullscreen-overlay" class="fixed inset-0 z-[999999] bg-[#0d1f14] text-white flex flex-col justify-between p-8 sm:p-14 hidden select-none">
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl sm:text-4xl">📢</span>
+                <span class="font-extrabold text-sm sm:text-lg tracking-wider text-[#a2e6b9] uppercase">조용한 교실 시각 전광판</span>
+            </div>
+            <button id="close-fullscreen-overlay-btn" class="fullscreen-exit-mode-btn">
+                <span>✕ 전광판 닫기 (ESC)</span>
+            </button>
+        </div>
+
+        <div class="flex-1 flex flex-col items-center justify-center text-center px-4 my-auto">
+            <div id="fullscreen-overlay-text" class="font-black text-5xl sm:text-7xl md:text-8xl lg:text-9xl tracking-tight leading-tight text-[#e8fbf0] notice-pulse break-keep break-words max-w-6xl drop-shadow-lg">
+                조용히 집중해주세요 🤫
+            </div>
+            <div id="fullscreen-overlay-sub" class="mt-8 text-lg sm:text-2xl font-bold text-[#86d6a2] bg-white/10 px-6 py-2 rounded-full border border-white/15">
+                선생님의 목소리 대신 글로 전하는 안내판 🍃
+            </div>
+        </div>
+
+        <div class="w-full text-center text-xs sm:text-sm text-white/50">
+            화면을 클릭하거나 ESC 키를 누르면 기본 화면으로 돌아갑니다
+        </div>
+    </div>
+
+    <footer class="relative z-10 w-full text-center py-3 text-xs text-[#7d7077] border-t border-[#ebdcd2] shrink-0 bg-white/90 backdrop-blur-md">
+        스마트 교실 도구 • 닌텐도 동물의 숲 에디션 🍃
+    </footer>
+
+    <!-- 자바스크립트 로직 -->
+    <script>
+        lucide.createIcons();
+
+        // 1. 학생 및 모둠 기본 데이터
+        const defaultStudents = [
+            "강래연", "강애림", "김예영", "다이아나", "신예슬", "우예기",
+            "이승환", "이예현", "이준성", "이찬", "장연아", "전서윤",
+            "지은진", "최민준", "최아준", "한혜정", "조상혁"
+        ];
+
+        let students = JSON.parse(localStorage.getItem('pyeongtaek_61_students')) || [...defaultStudents];
+        let remainingStudents = JSON.parse(localStorage.getItem('pyeongtaek_61_remaining_students')) || [...students];
+        
+        let totalGroups = parseInt(localStorage.getItem('pyeongtaek_61_group_count')) || 5;
+        let remainingGroups = JSON.parse(localStorage.getItem('pyeongtaek_61_remaining_groups')) || generateGroupsArray(totalGroups);
+
+        let currentMode = localStorage.getItem('pyeongtaek_61_draw_mode') || 'student';
+
+        // 닌텐도 게임 <동물의 숲> 최고 인기 주민 27인 공식 라인업
+        const acnhVillagers = [
+            { name: "토타케케", enName: "K.K. Slider", species: "강아지", tag: "달콤한 통기타 연주자 🎸", img: "/villagers/kk_slider.jpg", emoji: "🎸", motto: "음악처럼 자유롭고 즐겁게 해보자고!" },
+            { name: "여울", enName: "Isabelle", species: "강아지", tag: "언제나 밝고 친절한 대표 비서 🍃", img: "/villagers/isabelle.jpg", emoji: "🍃", motto: "오늘도 모두 힘내서 집중해봐요!" },
+            { name: "너굴", enName: "Tom Nook", species: "너구리", tag: "지금부터 집중하는 구리! 🦝", img: "/villagers/tom_nook.jpg", emoji: "🦝", motto: "조금만 더 힘내면 쉬는 시간인 구리!" },
+            { name: "부옥", enName: "Celeste", species: "부엉이", tag: "밤하늘 별을 사랑하는 천문학자 ✨", img: "/villagers/celeste.jpg", emoji: "✨", motto: "쏟아지는 별똥별처럼 눈부신 활약!" },
+            { name: "마스터", enName: "Brewster", species: "비둘기", tag: "따뜻한 비둘기 둥지 바리스타 ☕", img: "/villagers/brewster.jpg", emoji: "☕", motto: "…향긋한 커피 한 잔처럼 침착하게." },
+            { name: "미첼", enName: "Sasha", species: "토끼", tag: "초롱초롱 귀여운 민트 토끼 🐰", img: "/villagers/sasha.jpg", emoji: "🐰", motto: "헤헤, 우리 함께라면 다 잘될 거야!" },
+            { name: "레미", enName: "Sherb", species: "염소", tag: "달콤한 낮잠을 좋아하는 하늘색 염소 🍨", img: "/villagers/sherb.jpg", emoji: "🍨", motto: "느긋느긋 편안한 마음으로 해봐요~" },
+            { name: "탁호", enName: "Zucker", species: "문어", tag: "타코야끼를 쏙 빼닮은 귀염둥이 문어 🍡", img: "/villagers/zucker.jpg", emoji: "🍡", motto: "쫀득쫀득 맛있는 집중력 발휘 약속!" },
+            { name: "문리나", enName: "Marina", species: "문어", tag: "꽃을 꽂은 사랑스러운 핑크 문어 🌸", img: "/villagers/marina.jpg", emoji: "🌸", motto: "다정하고 씩씩하게 발표해봐요~" },
+            { name: "요비", enName: "Shino", species: "사슴", tag: "우아하고 고운 붉은 뿔 사슴 👘", img: "/villagers/shino.jpg", emoji: "👘", motto: "멋진 무대처럼 아름답게 펼쳐봐요." },
+            { name: "잭슨", enName: "Raymond", species: "고양이", tag: "시크한 안경 고양이 신사 👓", img: "/villagers/raymond.png", emoji: "👓", motto: "스마트하게 문제를 해결해 볼까요?" },
+            { name: "미애", enName: "Judy", species: "아기곰", tag: "반짝이는 파스텔 눈망울 ✨", img: "/villagers/judy.png", emoji: "✨", motto: "반짝반짝 빛나는 수업 시간이에요!" },
+            { name: "쭈니", enName: "Marshal", species: "다람쥐", tag: "도도한 다람쥐 바리스타 🐿️", img: "/villagers/marshal.png", emoji: "🐿️", motto: "훗, 완벽하게 집중하고 있군." },
+            { name: "사이다", enName: "Lolly", species: "고양이", tag: "순둥순둥 사랑스러운 줄무늬 🐱", img: "/villagers/lolly.png", emoji: "🐱", motto: "차근차근 해보면 다 잘 될 거야~" },
+            { name: "애플", enName: "Apple", species: "햄스터", tag: "동글동글 발랄한 사과 볼 햄스터 🍎", img: "/villagers/apple.png", emoji: "🍎", motto: "통통 튀는 에너지로 화이팅 팡팡!" },
+            { name: "모니카", enName: "Audie", species: "늑대", tag: "선글라스를 낀 긍정 파워 늑대 🕶️", img: "/villagers/audie.png", emoji: "🕶️", motto: "오늘도 세상에서 제일 멋지게!" },
+            { name: "비앙카", enName: "Whitney", species: "늑대", tag: "기품 있고 우아한 은빛 늑대 ❄️", img: "/villagers/whitney.png", emoji: "❄️", motto: "품격 있게 집중하는 모습이 아름다워." },
+            { name: "패치", enName: "Stitches", species: "아기곰", tag: "알록달록 사랑스런 봉제인형 곰 🧸", img: "/villagers/stitches.png", emoji: "🧸", motto: "달콤한 간식처럼 즐거운 시간이야~" },
+            { name: "시베리아", enName: "Fang", species: "늑대", tag: "츤데레 매력의 믿음직한 늑대 🐺", img: "/villagers/fang.png", emoji: "🐺", motto: "어디 한번 제대로 실력을 보여봐라." },
+            { name: "빙티", enName: "Bob", species: "고양이", tag: "엉뚱하고 유쾌한 보랏빛 고양이 💜", img: "/villagers/bob.png", emoji: "💜", motto: "헤헤, 신나게 재미있게 해보자구!" },
+            { name: "부케", enName: "Rosie", species: "고양이", tag: "상큼발랄 영원한 인기 고양이 🌸", img: "/villagers/rosie.png", emoji: "🌸", motto: "반짝이는 아이돌처럼 빛나는 우리 반!" },
+            { name: "뽀야미", enName: "Flurry", species: "햄스터", tag: "순백의 뽀송뽀송 하얀 햄스터 🤍", img: "/villagers/flurry.png", emoji: "🤍", motto: "조용조용 차분하게 힘내요~" },
+            { name: "크리스틴", enName: "Chrissy", species: "토끼", tag: "물방울무늬 핑크 토끼 아이돌 🎀", img: "/villagers/chrissy.png", emoji: "🎀", motto: "발랄하게 톡톡! 집중력 최고!" },
+            { name: "프랑소와", enName: "Francine", species: "토끼", tag: "도도하고 세련된 블루 토끼 아이돌 💙", img: "/villagers/francine.png", emoji: "💙", motto: "우아하고 차분하게 해결해봐요." },
+            { name: "차둘", enName: "Dom", species: "양", tag: "울먹이는 맑은 눈망울의 열정 양 🐑", img: "/villagers/dom.png", emoji: "🐑", motto: "으랏차! 끝까지 포기하지 마!" },
+            { name: "솔미", enName: "Fauna", species: "사슴", tag: "따뜻하고 온화한 사슴 소녀 🦌", img: "/villagers/fauna.png", emoji: "🦌", motto: "다정한 마음으로 함께해요~" },
+            { name: "피터", enName: "Beau", species: "사슴", tag: "느긋하고 평화로운 자연주의 사슴 🌿", img: "/villagers/beau.png", emoji: "🌿", motto: "느긋하지만 확실하게 해내자구." }
+        ];
+
+        // 활성 마스코트 인덱스
+        let currentMascotIndex = parseInt(localStorage.getItem('pyeongtaek_61_mascot_idx')) || 0;
+        if (currentMascotIndex >= acnhVillagers.length) currentMascotIndex = 0;
+
+        // 발표 응원 문구 목록
+        const cheerTags = [
+            "오늘의 반짝이는 주인공! 🌟",
+            "신나고 멋진 발표 기대해요! ✨",
+            "행운의 주인공 당첨! 🎈",
+            "모두 함께 힘찬 박수! 👏",
+            "자신감 있게 화이팅! 💖",
+            "빛나는 우리 반의 에이스! 🌸"
+        ];
+
+        function generateGroupsArray(count) {
+            let arr = [];
+            for (let i = 1; i <= count; i++) {
+                arr.push(`${i}모둠`);
+            }
+            return arr;
+        }
+
+        function saveState() {
+            localStorage.setItem('pyeongtaek_61_students', JSON.stringify(students));
+            localStorage.setItem('pyeongtaek_61_remaining_students', JSON.stringify(remainingStudents));
+            localStorage.setItem('pyeongtaek_61_group_count', totalGroups);
+            localStorage.setItem('pyeongtaek_61_remaining_groups', JSON.stringify(remainingGroups));
+            localStorage.setItem('pyeongtaek_61_draw_mode', currentMode);
+        }
+
+        // 2. 타이머 상태 및 계산
+        const CIRCUMFERENCE = 2 * Math.PI * 220;
+        let totalSeconds = 300;
+        let leftSeconds = 300;
+        let timerInterval = null;
+        let isRunning = false;
+        let audioCtx = null;
+
+        const progressBar = document.getElementById('progress-bar');
+        const timerDisplay = document.getElementById('timer-display');
+        const timerStatusBadge = document.getElementById('timer-status-badge');
+        const timerStatusText = document.getElementById('timer-status-text');
+        const activityInput = document.getElementById('activity-input');
+        
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        const missionCard = document.getElementById('mission-card');
+        const drawPlaceholder = document.getElementById('draw-placeholder');
+        const drawResult = document.getElementById('draw-result');
+        const missionText = document.getElementById('mission-text');
+        const resultAvatarImg = document.getElementById('result-avatar-img');
+        const resultNameText = document.getElementById('result-name-text');
+        const resultTagline = document.getElementById('result-tagline');
+        const resultBadgeEmoji = document.getElementById('result-badge-emoji');
+
+        const drawBtn = document.getElementById('draw-btn');
+        const modeStudentBtn = document.getElementById('mode-student-btn');
+        const modeGroupBtn = document.getElementById('mode-group-btn');
+        const modeBadge = document.getElementById('mode-badge');
+        const statusCountText = document.getElementById('status-count-text');
+        const cardResetBtn = document.getElementById('card-reset-btn');
+
+        const finishModal = document.getElementById('finish-modal');
+        const modalBox = document.getElementById('modal-box');
+        const extendBtn = document.getElementById('extend-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const settingsModal = document.getElementById('settings-modal');
+        const settingsCloseBtn = document.getElementById('settings-close-btn');
+        const settingsCancelBtn = document.getElementById('settings-cancel-btn');
+        const saveMissionsBtn = document.getElementById('save-missions-btn');
+        const missionsTextarea = document.getElementById('missions-textarea');
+        const groupCountInput = document.getElementById('group-count-input');
+
+        const customTimeBtn = document.getElementById('custom-time-btn');
+        const customTimeModal = document.getElementById('custom-time-modal');
+        const customMinutesInput = document.getElementById('custom-minutes-input');
+        const customTimeSaveBtn = document.getElementById('custom-time-save-btn');
+        const customTimeCancelBtn = document.getElementById('custom-time-cancel-btn');
+        const customTimeCloseBtn = document.getElementById('custom-time-close-btn');
+
+        // 동물의 숲 뽑기 연동 DOM
+        const resultVillagerInfo = document.getElementById('result-villager-info');
+        const resultVillagerName = document.getElementById('result-villager-name');
+
+        // 상단 활성 띠 배너 DOM
+        const activeNoticeBanner = document.getElementById('active-notice-banner');
+        const activeNoticeBannerText = document.getElementById('active-notice-banner-text');
+        const closeNoticeBannerBtn = document.getElementById('close-notice-banner-btn');
+
+        // 시각 확성기 (무음 대형 안내판) DOM
+        const megaphoneFabBtn = document.getElementById('megaphone-fab-btn');
+        const announcementModal = document.getElementById('announcement-modal');
+        const announcementCloseBtn = document.getElementById('announcement-close-btn');
+        const fullscreenAnnouncementBtn = document.getElementById('fullscreen-announcement-btn');
+        const noticeDisplayBox = document.getElementById('notice-display-box');
+        const noticeDisplayText = document.getElementById('notice-display-text');
+        const noticeDisplayBadge = document.getElementById('notice-display-badge');
+        const noticeSoundBtn = document.getElementById('notice-sound-btn');
+        const customNoticeInput = document.getElementById('custom-notice-input');
+        const clearNoticeTextBtn = document.getElementById('clear-notice-text-btn');
+        const setBannerNoticeBtn = document.getElementById('set-banner-notice-btn');
+        const launchFullscreenBoardBtn = document.getElementById('launch-fullscreen-board-btn');
+        const togglePulseBtn = document.getElementById('toggle-pulse-btn');
+
+        // 초대형 전체화면 전광판 오버레이 DOM
+        const announcementFullscreenOverlay = document.getElementById('announcement-fullscreen-overlay');
+        const fullscreenOverlayText = document.getElementById('fullscreen-overlay-text');
+        const closeFullscreenOverlayBtn = document.getElementById('close-fullscreen-overlay-btn');
+
+        // 설정 모달 탭 DOM
+        const settingsTabListBtn = document.getElementById('settings-tab-list-btn');
+        const settingsTabVillagersBtn = document.getElementById('settings-tab-villagers-btn');
+        const settingsTabList = document.getElementById('settings-tab-list');
+        const settingsTabVillagers = document.getElementById('settings-tab-villagers');
+        const villagersRosterGrid = document.getElementById('villagers-roster-grid');
+        const villagersTabCloseBtn = document.getElementById('villagers-tab-close-btn');
+
+        progressBar.style.strokeDasharray = CIRCUMFERENCE;
+
+        const savedActivity = localStorage.getItem('pyeongtaek_61_activity');
+        if (savedActivity) {
+            activityInput.value = savedActivity;
+        }
+
+        activityInput.addEventListener('input', () => {
+            localStorage.setItem('pyeongtaek_61_activity', activityInput.value);
+        });
+
+        document.querySelectorAll('.activity-preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.getAttribute('data-text');
+                activityInput.value = text;
+                localStorage.setItem('pyeongtaek_61_activity', text);
+            });
+        });
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        /* 3. 진행 상태별 색 변화 */
+        function updateDisplay() {
+            timerDisplay.textContent = formatTime(leftSeconds);
+            
+            const ratio = totalSeconds > 0 ? (leftSeconds / totalSeconds) : 0;
+            const offset = CIRCUMFERENCE * (1 - ratio);
+            progressBar.style.strokeDashoffset = offset;
+
+            let barColor = '#C8F0E0';
+            let badgeBg = '#C8F0E0';
+            let badgeText = '#11533e';
+            let badgeBorder = '#b0e6d2';
+            let statusLabel = '여유로운 진행 중';
+
+            if (ratio <= 0.20) {
+                barColor = '#FFB088';
+                badgeBg = '#FFB088';
+                badgeText = '#692909';
+                badgeBorder = '#fca174';
+                statusLabel = '마무리할 시간이에요';
+            } else if (ratio <= 0.50) {
+                barColor = '#FFE88A';
+                badgeBg = '#FFE88A';
+                badgeText = '#5c4b07';
+                badgeBorder = '#fae175';
+                statusLabel = '조금씩 서둘러주세요';
+            } else {
+                barColor = '#C8F0E0';
+                badgeBg = '#C8F0E0';
+                badgeText = '#11533e';
+                badgeBorder = '#b0e6d2';
+                statusLabel = '여유로운 진행 중';
+            }
+
+            progressBar.style.stroke = barColor;
+            timerStatusBadge.style.backgroundColor = badgeBg;
+            timerStatusBadge.style.color = badgeText;
+            timerStatusBadge.style.borderColor = badgeBorder;
+            timerStatusText.textContent = statusLabel;
+
+            // 종료 3초 전부터 숫자가 커지며 깜빡임
+            if (isRunning && leftSeconds <= 3 && leftSeconds > 0) {
+                timerDisplay.classList.add('countdown-urgent');
+                timerStatusText.textContent = '🔥 3초 전 종료 임박!';
+            } else {
+                timerDisplay.classList.remove('countdown-urgent');
+            }
+        }
+
+        function playBeepSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const playTone = (delay, freq) => {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.35);
+                    }, delay);
+                };
+
+                playTone(0, 880);   
+                playTone(300, 880);
+                playTone(600, 1174.66); 
+            } catch (e) {
+                console.log('AudioContext error', e);
+            }
+        }
+
+        // 2. 컨트롤 동작
+        function startTimer() {
+            if (isRunning || leftSeconds <= 0) return;
+            isRunning = true;
+            updateDisplay();
+
+            timerInterval = setInterval(() => {
+                leftSeconds--;
+                updateDisplay();
+
+                if (leftSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    onTimerFinished();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            if (!isRunning) return;
+            clearInterval(timerInterval);
+            isRunning = false;
+            timerDisplay.classList.remove('countdown-urgent');
+            timerStatusText.textContent = '일시정지됨';
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timerDisplay.classList.remove('countdown-urgent');
+            timerStatusText.textContent = '정지됨';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            leftSeconds = totalSeconds;
+            timerDisplay.classList.remove('countdown-urgent');
+            updateDisplay();
+        }
+
+        function onTimerFinished() {
+            playBeepSound();
+            finishModal.classList.remove('hidden');
+            document.body.classList.add('screen-flash');
+            setTimeout(() => {
+                finishModal.classList.remove('opacity-0');
+                modalBox.classList.remove('scale-95');
+                modalBox.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModalFunc() {
+            finishModal.classList.add('opacity-0');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+            document.body.classList.remove('screen-flash');
+            setTimeout(() => {
+                finishModal.classList.add('hidden');
+                resetTimer();
+            }, 300);
+        }
+
+        function extendTime() {
+            finishModal.classList.add('opacity-0');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+            document.body.classList.remove('screen-flash');
+            setTimeout(() => {
+                finishModal.classList.add('hidden');
+                totalSeconds = 60;
+                leftSeconds = 60;
+                updateDisplay();
+                startTimer();
+            }, 300);
+        }
+
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const secs = parseInt(btn.getAttribute('data-time'));
+                totalSeconds = secs;
+                leftSeconds = secs;
+                clearInterval(timerInterval);
+                isRunning = false;
+                timerDisplay.classList.remove('countdown-urgent');
+                updateDisplay();
+            });
+        });
+
+        startBtn.addEventListener('click', startTimer);
+        pauseBtn.addEventListener('click', pauseTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        closeModalBtn.addEventListener('click', closeModalFunc);
+        extendBtn.addEventListener('click', extendTime);
+
+        // 뽑기 모드 UI 동기화
+        function updateDrawUI() {
+            if (currentMode === 'student') {
+                modeBadge.textContent = "👤 학생 모드";
+                modeStudentBtn.className = "btn-pastel-mint font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer";
+                modeGroupBtn.className = "bg-white hover:bg-[#faf5f1] text-[#4a4046] border border-[#e4d8cf] font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer shadow-2xs";
+                statusCountText.textContent = `남은 인원: ${remainingStudents.length}명 / 전체 ${students.length}명`;
+            } else {
+                modeBadge.textContent = "👥 모둠 모드";
+                modeGroupBtn.className = "btn-pastel-mint font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer";
+                modeStudentBtn.className = "bg-white hover:bg-[#faf5f1] text-[#4a4046] border border-[#e4d8cf] font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer shadow-2xs";
+                const totalGroupsArr = generateGroupsArray(totalGroups);
+                statusCountText.textContent = `남은 모둠: ${remainingGroups.length}개 / 전체 ${totalGroupsArr.length}개`;
+            }
+        }
+
+        modeStudentBtn.addEventListener('click', () => {
+            currentMode = 'student';
+            saveState();
+            updateDrawUI();
+            showPlaceholder();
+        });
+
+        modeGroupBtn.addEventListener('click', () => {
+            currentMode = 'group';
+            saveState();
+            updateDrawUI();
+            showPlaceholder();
+        });
+
+        cardResetBtn.addEventListener('click', () => {
+            if (currentMode === 'student') {
+                remainingStudents = [...students];
+            } else {
+                remainingGroups = generateGroupsArray(totalGroups);
+            }
+            saveState();
+            updateDrawUI();
+            showPlaceholder("목록이 새로고침되었습니다! 🍀");
+        });
+
+        function showPlaceholder(customMsg) {
+            drawResult.classList.add('hidden');
+            drawPlaceholder.classList.remove('hidden');
+            missionText.textContent = customMsg || "뽑기 버튼을 누르세요!";
+        }
+
+        // 랜덤 뽑기 실행 (귀여운 캐릭터 이미지 + 학생/모둠 이름 표시)
+        function executeDraw() {
+            let selectedItem = "";
+            if (currentMode === 'student') {
+                if (students.length === 0) {
+                    showPlaceholder("등록된 학생이 없습니다!");
+                    return;
+                }
+                if (remainingStudents.length === 0) {
+                    remainingStudents = [...students];
+                }
+                const randomIndex = Math.floor(Math.random() * remainingStudents.length);
+                selectedItem = remainingStudents.splice(randomIndex, 1)[0];
+            } else {
+                let allGroups = generateGroupsArray(totalGroups);
+                if (allGroups.length === 0) {
+                    showPlaceholder("모둠 수가 0개입니다!");
+                    return;
+                }
+                if (remainingGroups.length === 0) {
+                    remainingGroups = [...allGroups];
+                }
+                const randomIndex = Math.floor(Math.random() * remainingGroups.length);
+                selectedItem = remainingGroups.splice(randomIndex, 1)[0];
+            }
+
+            // 동물의 숲 인기 주민 중 랜덤 선택 및 응원 문구 선택
+            const chosenVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
+            const chosenTag = cheerTags[Math.floor(Math.random() * cheerTags.length)];
+
+            // 카드 바운스 및 테두리 효과
+            missionCard.classList.add('scale-[1.02]', 'border-[#71c38a]');
+            setTimeout(() => {
+                missionCard.classList.remove('scale-[1.02]', 'border-[#71c38a]');
+            }, 250);
+
+            // 결과 뷰 표시
+            drawPlaceholder.classList.add('hidden');
+            drawResult.classList.remove('hidden');
+            drawResult.classList.remove('animate-pop');
+            void drawResult.offsetWidth; // trigger reflow
+            drawResult.classList.add('animate-pop');
+
+            resultAvatarImg.src = chosenVillager.img;
+            resultAvatarImg.alt = `동물의 숲 ${chosenVillager.name} (${chosenVillager.species})`;
+            if (resultVillagerName) {
+                resultVillagerName.textContent = `${chosenVillager.name} (${chosenVillager.species}) ${chosenVillager.emoji}`;
+            }
+            resultNameText.textContent = selectedItem;
+            resultTagline.textContent = `"${chosenVillager.name}: ${chosenVillager.motto || chosenTag}"`;
+            resultBadgeEmoji.textContent = chosenVillager.emoji;
+
+            saveState();
+            updateDrawUI();
+        }
+
+        drawBtn.addEventListener('click', executeDraw);
+        missionCard.addEventListener('click', executeDraw);
+
+        // 설정 모달
+        settingsBtn.addEventListener('click', () => {
+            missionsTextarea.value = students.join('\n');
+            groupCountInput.value = totalGroups;
+            settingsModal.classList.remove('hidden');
+        });
+
+        const closeSettingsModal = () => {
+            settingsModal.classList.add('hidden');
+        };
+
+        settingsCloseBtn.addEventListener('click', closeSettingsModal);
+        settingsCancelBtn.addEventListener('click', closeSettingsModal);
+
+        saveMissionsBtn.addEventListener('click', () => {
+            const textVal = missionsTextarea.value.trim();
+            const newGroupCount = parseInt(groupCountInput.value);
+
+            if (textVal) {
+                students = textVal.split('\n').map(item => item.trim()).filter(item => item.length > 0);
+                remainingStudents = [...students];
+            }
+
+            if (!isNaN(newGroupCount) && newGroupCount > 0) {
+                totalGroups = newGroupCount;
+                remainingGroups = generateGroupsArray(totalGroups);
+            }
+
+            saveState();
+            closeSettingsModal();
+            updateDrawUI();
+            showPlaceholder("설정이 저장되었습니다! ✨");
+        });
+
+        // 직접 시간 입력 모달
+        customTimeBtn.addEventListener('click', () => {
+            customTimeModal.classList.remove('hidden');
+        });
+
+        const closeCustomModal = () => {
+            customTimeModal.classList.add('hidden');
+        };
+
+        customTimeCancelBtn.addEventListener('click', closeCustomModal);
+        customTimeCloseBtn.addEventListener('click', closeCustomModal);
+
+        customTimeSaveBtn.addEventListener('click', () => {
+            const mins = parseInt(customMinutesInput.value);
+            if (!isNaN(mins) && mins > 0) {
+                totalSeconds = mins * 60;
+                leftSeconds = totalSeconds;
+                clearInterval(timerInterval);
+                isRunning = false;
+                timerDisplay.classList.remove('countdown-urgent');
+                updateDisplay();
+                closeCustomModal();
+            }
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        // 타이머 개별 전체화면 토글
+        const timerSection = document.getElementById('timer-section');
+        const timerFullscreenBtn = document.getElementById('timer-fullscreen-btn');
+
+        const resetTimerBtnStyle = () => {
+            timerFullscreenBtn.className = "flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-4 py-2 rounded-full font-bold text-xs md:text-sm transition active:scale-95 shadow-2xs cursor-pointer";
+            timerFullscreenBtn.innerHTML = '<span>🔍 타이머 전체화면</span>';
+        };
+
+        const toggleTimerFullscreen = (forceClose = false) => {
+            const isCurrentlyFs = document.body.classList.contains('timer-fullscreen-active');
+            if (forceClose || isCurrentlyFs) {
+                document.body.classList.remove('timer-fullscreen-active');
+                resetTimerBtnStyle();
+            } else {
+                document.body.classList.remove('draw-fullscreen-active');
+                resetDrawBtnStyle();
+                document.body.classList.add('timer-fullscreen-active');
+                timerFullscreenBtn.className = "fullscreen-exit-mode-btn active:scale-95";
+                timerFullscreenBtn.innerHTML = '<span>✕ 기본 화면</span>';
+            }
+        };
+
+        timerFullscreenBtn.addEventListener('click', () => toggleTimerFullscreen());
+
+        // 뽑기 개별 전체화면 토글
+        const drawSection = document.getElementById('draw-section');
+        const drawFullscreenBtn = document.getElementById('draw-fullscreen-btn');
+
+        const resetDrawBtnStyle = () => {
+            drawFullscreenBtn.className = "flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-4 py-2 rounded-full font-bold text-xs md:text-sm transition active:scale-95 shadow-2xs cursor-pointer";
+            drawFullscreenBtn.innerHTML = '<span>🔍 뽑기 전체화면</span>';
+        };
+
+        const toggleDrawFullscreen = (forceClose = false) => {
+            const isCurrentlyFs = document.body.classList.contains('draw-fullscreen-active');
+            if (forceClose || isCurrentlyFs) {
+                document.body.classList.remove('draw-fullscreen-active');
+                resetDrawBtnStyle();
+            } else {
+                document.body.classList.remove('timer-fullscreen-active');
+                toggleTimerFullscreen(true);
+                document.body.classList.add('draw-fullscreen-active');
+                drawFullscreenBtn.className = "fullscreen-exit-mode-btn active:scale-95";
+                drawFullscreenBtn.innerHTML = '<span>✕ 기본 화면</span>';
+            }
+        };
+
+        drawFullscreenBtn.addEventListener('click', () => toggleDrawFullscreen());
+
+        // =========================================================
+        // 4. 시각 확성기 (무음 대형 교실 안내판) 로직
+        // =========================================================
+        let noticeText = localStorage.getItem('pyeongtaek_61_notice') || "조용히 집중해주세요 🤫";
+        let noticeTheme = "forest";
+        let noticeSize = "large";
+        let isNoticePulse = true;
+
+        // 부드러운 띵동~ 주목 차임벨
+        function playNoticeChime() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const playChimeTone = (delay, freq, duration) => {
+                    setTimeout(() => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + duration);
+                    }, delay);
+                };
+
+                // 기분 좋은 2음 실로폰/차임 멜로디 (솔 784Hz -> 도 1046Hz)
+                playChimeTone(0, 783.99, 0.6);
+                playChimeTone(220, 1046.50, 0.9);
+            } catch (e) {
+                console.log('Chime sound error', e);
+            }
+        }
+
+        noticeSoundBtn.addEventListener('click', () => {
+            playNoticeChime();
+            noticeSoundBtn.classList.add('scale-95');
+            setTimeout(() => noticeSoundBtn.classList.remove('scale-95'), 150);
+        });
+
+        function updateNoticeDisplayUI() {
+            noticeDisplayText.textContent = noticeText;
+            customNoticeInput.value = noticeText;
+
+            // 크기 적용
+            noticeDisplayText.className = "font-black leading-snug tracking-tight transition-all duration-200 break-keep break-words w-full";
+            if (noticeSize === 'normal') {
+                noticeDisplayText.classList.add('text-xl', 'sm:text-2xl', 'md:text-3xl');
+            } else if (noticeSize === 'large') {
+                noticeDisplayText.classList.add('text-2xl', 'sm:text-3xl', 'md:text-4xl');
+            } else {
+                noticeDisplayText.classList.add('text-3xl', 'sm:text-4xl', 'md:text-5xl');
+            }
+
+            // 테마 적용
+            if (noticeTheme === 'forest') {
+                noticeDisplayBox.className = "w-full min-h-[140px] sm:min-h-[170px] max-h-[220px] rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-inner border-2 border-[#b5e7c6] bg-gradient-to-br from-[#f1faf4] to-[#e6f7ec] transition-all duration-300 relative overflow-hidden";
+                noticeDisplayText.style.color = "#14532d";
+                noticeDisplayBadge.className = "absolute top-2.5 left-3 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/80 text-[#1e5a37] border border-[#b6e8c4] shadow-2xs flex items-center gap-1";
+                noticeDisplayBadge.innerHTML = "<span>🍃 동물의 숲 교실 안내판</span>";
+            } else if (noticeTheme === 'yellow') {
+                noticeDisplayBox.className = "w-full min-h-[140px] sm:min-h-[170px] max-h-[220px] rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-inner border-2 border-[#fae175] bg-gradient-to-br from-[#fffdf2] to-[#fff7d1] transition-all duration-300 relative overflow-hidden";
+                noticeDisplayText.style.color = "#634703";
+                noticeDisplayBadge.className = "absolute top-2.5 left-3 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/80 text-[#634703] border border-[#f5dc6f] shadow-2xs flex items-center gap-1";
+                noticeDisplayBadge.innerHTML = "<span>☀️ 햇살 집중 안내</span>";
+            } else if (noticeTheme === 'dark') {
+                noticeDisplayBox.className = "w-full min-h-[140px] sm:min-h-[170px] max-h-[220px] rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-inner border-2 border-[#4a4047] bg-[#1e191d] transition-all duration-300 relative overflow-hidden";
+                noticeDisplayText.style.color = "#8bf2ba";
+                noticeDisplayBadge.className = "absolute top-2.5 left-3 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/10 text-[#8bf2ba] border border-white/20 shadow-2xs flex items-center gap-1";
+                noticeDisplayBadge.innerHTML = "<span>🌙 고대비 다크 전광판</span>";
+            } else if (noticeTheme === 'peach') {
+                noticeDisplayBox.className = "w-full min-h-[140px] sm:min-h-[170px] max-h-[220px] rounded-3xl p-5 sm:p-7 flex flex-col items-center justify-center text-center shadow-inner border-2 border-[#fca174] bg-gradient-to-br from-[#fff9f5] to-[#ffe8dc] transition-all duration-300 relative overflow-hidden";
+                noticeDisplayText.style.color = "#7c2d08";
+                noticeDisplayBadge.className = "absolute top-2.5 left-3 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/80 text-[#7c2d08] border border-[#fba378] shadow-2xs flex items-center gap-1";
+                noticeDisplayBadge.innerHTML = "<span>🚨 주목 피치 알림</span>";
+            }
+
+            // 펄스 애니메이션
+            if (isNoticePulse) {
+                noticeDisplayText.classList.add('notice-pulse');
+            } else {
+                noticeDisplayText.classList.remove('notice-pulse');
+            }
+        }
+
+        // 테마 버튼 클릭
+        document.querySelectorAll('.notice-theme-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                noticeTheme = btn.getAttribute('data-theme');
+                document.querySelectorAll('.notice-theme-btn').forEach(b => {
+                    b.className = "notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#eee3da] bg-white text-[#7d7077] hover:bg-[#faf6f3] cursor-pointer";
+                });
+                btn.className = "notice-theme-btn text-[11px] font-bold px-2.5 py-1 rounded-full border border-[#a2e6b9] bg-[#dcf5e6] text-[#1b5935] cursor-pointer";
+                updateNoticeDisplayUI();
+            });
+        });
+
+        // 크기 버튼 클릭
+        document.querySelectorAll('.notice-size-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                noticeSize = btn.getAttribute('data-size');
+                document.querySelectorAll('.notice-size-btn').forEach(b => {
+                    b.className = "notice-size-btn text-[11px] font-bold px-2 py-0.5 rounded-full text-[#7d7077] cursor-pointer";
+                });
+                btn.className = "notice-size-btn text-[11px] font-bold px-2 py-0.5 rounded-full bg-white text-[#3d3339] shadow-2xs cursor-pointer";
+                updateNoticeDisplayUI();
+            });
+        });
+
+        // 펄스 토글
+        togglePulseBtn.addEventListener('click', () => {
+            isNoticePulse = !isNoticePulse;
+            togglePulseBtn.textContent = isNoticePulse ? "✨ 펄스 강조: 켜짐" : "✨ 펄스 강조: 꺼짐";
+            togglePulseBtn.className = isNoticePulse 
+                ? "text-[11px] font-bold px-2.5 py-1 rounded-full bg-[#f1fbf4] text-[#1e5a37] border border-[#bce8cb] cursor-pointer"
+                : "text-[11px] font-bold px-2.5 py-1 rounded-full bg-white text-[#8a7b84] border border-[#ebdcd2] cursor-pointer";
+            updateNoticeDisplayUI();
+        });
+
+        // 빠른 프리셋 버튼 클릭
+        document.querySelectorAll('.quick-preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                noticeText = btn.getAttribute('data-msg');
+                localStorage.setItem('pyeongtaek_61_notice', noticeText);
+                updateNoticeDisplayUI();
+            });
+        });
+
+        // 직접 입력 이벤트
+        customNoticeInput.addEventListener('input', (e) => {
+            noticeText = e.target.value.trim() || "안내할 내용을 입력해주세요";
+            localStorage.setItem('pyeongtaek_61_notice', noticeText);
+            updateNoticeDisplayUI();
+        });
+
+        clearNoticeTextBtn.addEventListener('click', () => {
+            customNoticeInput.value = "";
+            noticeText = "안내할 내용을 입력해주세요";
+            updateNoticeDisplayUI();
+            customNoticeInput.focus();
+        });
+
+        // 모달 열기/닫기
+        megaphoneFabBtn.addEventListener('click', () => {
+            updateNoticeDisplayUI();
+            announcementModal.classList.remove('hidden');
+        });
+
+        const closeAnnouncementModal = () => {
+            announcementModal.classList.add('hidden');
+        };
+
+        announcementCloseBtn.addEventListener('click', closeAnnouncementModal);
+
+        // 상단 띠 배너로 띄우기
+        setBannerNoticeBtn.addEventListener('click', () => {
+            activeNoticeBannerText.textContent = noticeText;
+            activeNoticeBanner.classList.remove('hidden');
+            closeAnnouncementModal();
+        });
+
+        closeNoticeBannerBtn.addEventListener('click', () => {
+            activeNoticeBanner.classList.add('hidden');
+        });
+
+        // 초대형 전체화면 전광판 모드
+        function openFullscreenAnnouncement() {
+            fullscreenOverlayText.textContent = noticeText;
+            announcementFullscreenOverlay.classList.remove('hidden');
+            closeAnnouncementModal();
+        }
+
+        function closeFullscreenAnnouncement() {
+            announcementFullscreenOverlay.classList.add('hidden');
+        }
+
+        launchFullscreenBoardBtn.addEventListener('click', openFullscreenAnnouncement);
+        fullscreenAnnouncementBtn.addEventListener('click', openFullscreenAnnouncement);
+        closeFullscreenOverlayBtn.addEventListener('click', closeFullscreenAnnouncement);
+        announcementFullscreenOverlay.addEventListener('click', (e) => {
+            if (e.target === announcementFullscreenOverlay || e.target.closest('#fullscreen-overlay-text')) {
+                closeFullscreenAnnouncement();
+            }
+        });
+
+        // =========================================================
+        // 5. 설정 모달 내 동물의 숲 27인 주민 갤러리 렌더링
+        // =========================================================
+        function renderVillagersRoster() {
+            villagersRosterGrid.innerHTML = '';
+            acnhVillagers.forEach((villager) => {
+                const card = document.createElement('div');
+                card.className = 'flex flex-col items-center p-2.5 rounded-2xl border border-[#ebdcd2] bg-white hover:bg-[#f2faf5] hover:border-[#71c38a] transition shadow-2xs text-center';
+                card.innerHTML = `
+                    <div class="w-14 h-14 rounded-2xl overflow-hidden border border-[#cfead7] bg-white p-1 mb-1.5 shadow-2xs flex items-center justify-center">
+                        <img src="${villager.img}" alt="${villager.name}" class="w-full h-full object-contain" />
+                    </div>
+                    <span class="font-extrabold text-xs text-[#3d3339] flex items-center gap-1">${villager.name} ${villager.emoji}</span>
+                    <span class="text-[10px] text-[#8a7b84]">${villager.species}</span>
+                    <p class="mt-1 text-[9px] font-bold text-[#1b5935] bg-[#e8f8ed] px-2 py-0.5 rounded-full truncate max-w-full" title="${villager.tag}">
+                        ${villager.tag}
+                    </p>
+                `;
+                villagersRosterGrid.appendChild(card);
+            });
+        }
+
+        settingsTabListBtn.addEventListener('click', () => {
+            settingsTabListBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer";
+            settingsTabVillagersBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer";
+            settingsTabList.classList.remove('hidden');
+            settingsTabVillagers.classList.add('hidden');
+        });
+
+        settingsTabVillagersBtn.addEventListener('click', () => {
+            settingsTabVillagersBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer";
+            settingsTabListBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer";
+            settingsTabVillagers.classList.remove('hidden');
+            settingsTabList.classList.add('hidden');
+            renderVillagersRoster();
+        });
+
+        villagersTabCloseBtn.addEventListener('click', closeSettingsModal);
+
+        // ESC 키로도 언제든 기본 화면 복귀 지원
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!announcementFullscreenOverlay.classList.contains('hidden')) {
+                    closeFullscreenAnnouncement();
+                    return;
+                }
+                if (!announcementModal.classList.contains('hidden')) {
+                    closeAnnouncementModal();
+                    return;
+                }
+                if (document.body.classList.contains('timer-fullscreen-active')) {
+                    toggleTimerFullscreen(true);
+                }
+                if (document.body.classList.contains('draw-fullscreen-active')) {
+                    toggleDrawFullscreen(true);
+                }
+            }
+        });
+
+        updateDisplay();
+        updateDrawUI();
+        updateNoticeDisplayUI();
+    </script>
+</body>
+</html>

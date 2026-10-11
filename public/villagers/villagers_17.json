@@ -1,0 +1,218 @@
+[
+  {
+    "en": "K.K. Slider",
+    "ko": "토타케케",
+    "tag": "달콤한 통기타 연주자 🎸",
+    "species": "강아지",
+    "image": "./villagers/kk_slider.jpg",
+    "emoji": "🎸"
+  },
+  {
+    "en": "Isabelle",
+    "ko": "여울",
+    "tag": "언제나 밝고 친절한 대표 비서 🍃",
+    "species": "강아지",
+    "image": "./villagers/isabelle.jpg",
+    "emoji": "🍃"
+  },
+  {
+    "en": "Tom Nook",
+    "ko": "너굴",
+    "tag": "지금부터 집중하는 구리! 🦝",
+    "species": "너구리",
+    "image": "./villagers/tom_nook.jpg",
+    "emoji": "🦝"
+  },
+  {
+    "en": "Celeste",
+    "ko": "부옥",
+    "tag": "밤하늘 별을 사랑하는 천문학자 ✨",
+    "species": "부엉이",
+    "image": "./villagers/celeste.jpg",
+    "emoji": "✨"
+  },
+  {
+    "en": "Brewster",
+    "ko": "마스터",
+    "tag": "따뜻한 비둘기 둥지 바리스타 ☕",
+    "species": "비둘기",
+    "image": "./villagers/brewster.jpg",
+    "emoji": "☕"
+  },
+  {
+    "en": "Sasha",
+    "ko": "미첼",
+    "tag": "초롱초롱 귀여운 민트 토끼 🐰",
+    "species": "토끼",
+    "image": "./villagers/sasha.jpg",
+    "emoji": "🐰"
+  },
+  {
+    "en": "Sherb",
+    "ko": "레미",
+    "tag": "달콤한 낮잠을 좋아하는 하늘색 염소 🍨",
+    "species": "염소",
+    "image": "./villagers/sherb.jpg",
+    "emoji": "🍨"
+  },
+  {
+    "en": "Zucker",
+    "ko": "탁호",
+    "tag": "타코야끼를 쏙 빼닮은 귀염둥이 문어 🍡",
+    "species": "문어",
+    "image": "./villagers/zucker.jpg",
+    "emoji": "🍡"
+  },
+  {
+    "en": "Marina",
+    "ko": "문리나",
+    "tag": "꽃을 꽂은 사랑스러운 핑크 문어 🌸",
+    "species": "문어",
+    "image": "./villagers/marina.jpg",
+    "emoji": "🌸"
+  },
+  {
+    "en": "Shino",
+    "ko": "요비",
+    "tag": "우아하고 고운 붉은 뿔 사슴 👘",
+    "species": "사슴",
+    "image": "./villagers/shino.jpg",
+    "emoji": "👘"
+  },
+  {
+    "en": "Raymond",
+    "ko": "잭슨",
+    "tag": "시크한 안경 고양이 신사 👓",
+    "species": "고양이",
+    "image": "./villagers/raymond.png",
+    "emoji": "👓"
+  },
+  {
+    "en": "Judy",
+    "ko": "미애",
+    "tag": "반짝이는 파스텔 눈망울 ✨",
+    "species": "아기곰",
+    "image": "./villagers/judy.png",
+    "emoji": "✨"
+  },
+  {
+    "en": "Marshal",
+    "ko": "쭈니",
+    "tag": "도도한 다람쥐 바리스타 🐿️",
+    "species": "다람쥐",
+    "image": "./villagers/marshal.png",
+    "emoji": "🐿️"
+  },
+  {
+    "en": "Lolly",
+    "ko": "사이다",
+    "tag": "순둥순둥 사랑스러운 줄무늬 🐱",
+    "species": "고양이",
+    "image": "./villagers/lolly.png",
+    "emoji": "🐱"
+  },
+  {
+    "en": "Apple",
+    "ko": "애플",
+    "tag": "동글동글 발랄한 사과 볼 햄스터 🍎",
+    "species": "햄스터",
+    "image": "./villagers/apple.png",
+    "emoji": "🍎"
+  },
+  {
+    "en": "Audie",
+    "ko": "모니카",
+    "tag": "선글라스를 낀 긍정 파워 늑대 🕶️",
+    "species": "늑대",
+    "image": "./villagers/audie.png",
+    "emoji": "🕶️"
+  },
+  {
+    "en": "Whitney",
+    "ko": "비앙카",
+    "tag": "기품 있고 우아한 은빛 늑대 ❄️",
+    "species": "늑대",
+    "image": "./villagers/whitney.png",
+    "emoji": "❄️"
+  },
+  {
+    "en": "Stitches",
+    "ko": "패치",
+    "tag": "알록달록 사랑스런 봉제인형 곰 🧸",
+    "species": "아기곰",
+    "image": "./villagers/stitches.png",
+    "emoji": "🧸"
+  },
+  {
+    "en": "Fang",
+    "ko": "시베리아",
+    "tag": "츤데레 매력의 믿음직한 늑대 🐺",
+    "species": "늑대",
+    "image": "./villagers/fang.png",
+    "emoji": "🐺"
+  },
+  {
+    "en": "Bob",
+    "ko": "빙티",
+    "tag": "엉뚱하고 유쾌한 보랏빛 고양이 💜",
+    "species": "고양이",
+    "image": "./villagers/bob.png",
+    "emoji": "💜"
+  },
+  {
+    "en": "Rosie",
+    "ko": "부케",
+    "tag": "상큼발랄 영원한 인기 고양이 🌸",
+    "species": "고양이",
+    "image": "./villagers/rosie.png",
+    "emoji": "🌸"
+  },
+  {
+    "en": "Flurry",
+    "ko": "뽀야미",
+    "tag": "순백의 뽀송뽀송 하얀 햄스터 🤍",
+    "species": "햄스터",
+    "image": "./villagers/flurry.png",
+    "emoji": "🤍"
+  },
+  {
+    "en": "Chrissy",
+    "ko": "크리스틴",
+    "tag": "물방울무늬 핑크 토끼 아이돌 🎀",
+    "species": "토끼",
+    "image": "./villagers/chrissy.png",
+    "emoji": "🎀"
+  },
+  {
+    "en": "Francine",
+    "ko": "프랑소와",
+    "tag": "도도하고 세련된 블루 토끼 아이돌 💙",
+    "species": "토끼",
+    "image": "./villagers/francine.png",
+    "emoji": "💙"
+  },
+  {
+    "en": "Dom",
+    "ko": "차둘",
+    "tag": "울먹이는 맑은 눈망울의 열정 양 🐑",
+    "species": "양",
+    "image": "./villagers/dom.png",
+    "emoji": "🐑"
+  },
+  {
+    "en": "Fauna",
+    "ko": "솔미",
+    "tag": "따뜻하고 온화한 사슴 소녀 🦌",
+    "species": "사슴",
+    "image": "./villagers/fauna.png",
+    "emoji": "🦌"
+  },
+  {
+    "en": "Beau",
+    "ko": "피터",
+    "tag": "느긋하고 평화로운 자연주의 사슴 🌿",
+    "species": "사슴",
+    "image": "./villagers/beau.png",
+    "emoji": "🌿"
+  }
+]
