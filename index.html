@@ -18,15 +18,17 @@
     <style>
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-image: url('./src/assets/images/sanrio_sweets_bg_1789827732698.jpg');
+            background-image: url('/src/assets/images/theme_spring_bg_1791734215442.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             color: #3b3338;
+            transition: background-image 0.5s ease-in-out;
         }
         .pastel-overlay {
-            background-color: rgba(255, 252, 248, 0.82);
-            backdrop-filter: blur(10px);
+            background-color: rgba(255, 248, 250, 0.78);
+            backdrop-filter: blur(8px);
+            transition: background-color 0.5s ease-in-out, backdrop-filter 0.5s ease;
         }
         .glass-card {
             background: rgba(255, 255, 255, 0.94);
@@ -121,23 +123,27 @@
             animation: countdown-zoom-flash 1s infinite ease-in-out;
         }
 
-        /* 종료 3초 전부터 숫자가 커지며 깜빡임 */
+        /* 종료 10초 전부터 카운트다운 긴박 효과 */
         @keyframes countdown-zoom-flash {
             0%, 100% {
-                transform: scale(1.18);
+                transform: scale(1.16);
                 color: #e63946;
-                text-shadow: 0 0 20px rgba(230, 57, 70, 0.35);
+                text-shadow: 0 0 24px rgba(230, 57, 70, 0.45);
                 opacity: 1;
             }
             50% {
                 transform: scale(1);
-                color: #ff7b89;
+                color: #f87171;
                 text-shadow: none;
-                opacity: 0.55;
+                opacity: 0.75;
             }
         }
         .countdown-urgent {
-            animation: countdown-zoom-flash 0.65s infinite ease-in-out;
+            animation: countdown-zoom-flash 0.8s infinite ease-in-out;
+            display: inline-block;
+        }
+        .countdown-super-urgent {
+            animation: countdown-zoom-flash 0.45s infinite ease-in-out;
             display: inline-block;
         }
 
@@ -159,6 +165,30 @@
         }
         .animate-pop {
             animation: pop-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* 동물의 숲 주민 셔플 애니메이션 */
+        @keyframes villager-shuffle-roll {
+            0% { transform: scale(0.92) rotate(-3deg); filter: blur(1.5px); }
+            50% { transform: scale(1.06) rotate(3deg); filter: blur(0px); }
+            100% { transform: scale(1) rotate(0deg); filter: blur(0px); }
+        }
+        .animate-villager-shuffle {
+            animation: villager-shuffle-roll 0.08s ease-in-out;
+        }
+
+        @keyframes card-shuffle-pulse {
+            0%, 100% {
+                border-color: #ebdcd2;
+                box-shadow: 0 4px 15px rgba(103, 181, 121, 0.15);
+            }
+            50% {
+                border-color: #71c38a;
+                box-shadow: 0 8px 24px rgba(113, 195, 138, 0.45);
+            }
+        }
+        .card-shuffling {
+            animation: card-shuffle-pulse 0.35s infinite ease-in-out;
         }
 
         ::-webkit-scrollbar {
@@ -387,7 +417,12 @@
                 <p class="text-xs text-[#7d7077]">수업 집중 타이머 & 동물의 숲 랜덤 뽑기</p>
             </div>
         </div>
-        <div class="flex items-center space-x-2.5">
+        <div class="flex items-center space-x-2">
+            <button id="theme-quick-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#a3e2ca] hover:bg-[#f6fcf9] bg-white text-[#3d3339] px-3.5 py-2 rounded-full font-bold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer" title="배경 테마 변경 (계절 및 수업 상황)">
+                <span id="header-theme-icon" class="text-sm">🌸</span>
+                <span id="header-theme-name" class="hidden sm:inline text-xs font-bold text-[#44383f]">봄 & 벚꽃</span>
+                <span class="text-[10px] text-[#7d7077] font-semibold bg-[#f4ece5] px-1.5 py-0.5 rounded-md hidden md:inline">테마</span>
+            </button>
             <button id="fullscreen-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-4 py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
                 <i data-lucide="maximize" class="w-4 h-4 text-[#8a7a83]"></i>
                 <span class="hidden sm:inline">전체화면</span>
@@ -557,7 +592,7 @@
                                 <span id="result-badge-emoji" class="absolute -top-1.5 -right-1.5 text-xl drop-shadow-sm">✨</span>
                             </div>
                             <div id="result-villager-info" class="text-xs md:text-sm font-extrabold text-[#1a5b3a] bg-[#e6f7ec] px-3 py-0.5 rounded-full border border-[#a2e6b9] mb-1 flex items-center gap-1.5 shadow-2xs shrink-0">
-                                <span>🍃 함께 뽑힌 친구:</span>
+                                <span id="result-villager-label">🍃 함께 뽑힌 친구:</span>
                                 <span id="result-villager-name" class="font-black text-[#11532e]">토타케케 (강아지) 🎸</span>
                             </div>
                             <div id="result-name-text" class="text-3xl sm:text-4xl md:text-5xl font-black text-[#3d3339] tracking-tight my-0.5 leading-tight shrink-0">
@@ -605,7 +640,7 @@
 
     <!-- 항목 설정 모달 -->
     <div id="settings-modal" class="fixed inset-0 bg-[#3d3339]/40 backdrop-blur-xs z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl border-2 border-[#ebdcd2] flex flex-col max-h-[88vh]">
+        <div class="bg-white rounded-3xl p-5 md:p-7 max-w-2xl w-full shadow-2xl border-2 border-[#ebdcd2] flex flex-col max-h-[88vh]">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-lg font-bold text-[#3d3339] flex items-center gap-2">
                     <i data-lucide="settings" class="w-5 h-5 text-[#FFB088]"></i>
@@ -616,13 +651,19 @@
                 </button>
             </div>
 
-            <!-- 탭 전환 버튼 [명단 설정] [동물의 숲 주민] -->
-            <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#f7f2ed] rounded-2xl mb-4 shrink-0">
-                <button id="settings-tab-list-btn" class="py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer">
-                    👥 학생 명단 & 모둠
+            <!-- 탭 전환 버튼 [명단 설정] [배경 테마] [알림음 볼륨] [동물의 숲 주민] -->
+            <div class="grid grid-cols-4 gap-1 p-1 bg-[#f7f2ed] rounded-2xl mb-4 shrink-0">
+                <button id="settings-tab-list-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center">
+                    👥 학생 명단
                 </button>
-                <button id="settings-tab-villagers-btn" class="py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer">
-                    🍃 동물의 숲 주민 (27인)
+                <button id="settings-tab-theme-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center flex items-center justify-center gap-1">
+                    <span>🎨</span> 배경 테마
+                </button>
+                <button id="settings-tab-volume-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center flex items-center justify-center gap-1">
+                    <span id="tab-volume-icon">🔊</span> 볼륨 조절
+                </button>
+                <button id="settings-tab-villagers-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center">
+                    🍃 주민(27인)
                 </button>
             </div>
             
@@ -645,7 +686,99 @@
                 </div>
             </div>
 
-            <!-- 탭 2: 동물의 숲 주민 라인업 -->
+            <!-- 탭 2: 배경 테마 설정 (계절 및 수업 상황) -->
+            <div id="settings-tab-theme" class="hidden flex-1 flex flex-col overflow-y-auto">
+                <div class="flex items-center justify-between mb-3 shrink-0">
+                    <div>
+                        <span class="text-xs font-bold text-[#3d3339] block">🎨 수업 상황 & 사계절 배경 테마</span>
+                        <span class="text-[11px] text-[#7d7077]">수업 활동(자습/시험/놀이)이나 계절에 맞춰 타이머와 뽑기 배경을 즉시 변경합니다.</span>
+                    </div>
+                </div>
+
+                <!-- 테마 카테고리 필터 버튼 -->
+                <div class="flex items-center gap-1.5 mb-3 shrink-0 p-1 bg-[#f7f2ed] rounded-xl">
+                    <button id="theme-filter-all" class="theme-filter-btn flex-1 py-1.5 px-2 rounded-lg text-xs font-bold bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center" data-filter="all">전체 (7)</button>
+                    <button id="theme-filter-season" class="theme-filter-btn flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center" data-filter="season">🍂 사계절 (4)</button>
+                    <button id="theme-filter-situation" class="theme-filter-btn flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center" data-filter="situation">📚 수업 상황 (3)</button>
+                </div>
+
+                <!-- 테마 카드 목록 그리드 -->
+                <div id="theme-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto pr-1 pb-2 flex-1 max-h-[380px]">
+                    <!-- JS로 동적 렌더링 -->
+                </div>
+
+                <div class="pt-3 border-t border-[#ebdcd2] shrink-0 mt-2">
+                    <button id="theme-tab-close-btn" class="w-full btn-pastel-mint font-bold py-2.5 rounded-2xl shadow transition cursor-pointer">테마 확인 완료</button>
+                </div>
+            </div>
+
+            <!-- 탭 2: 알림음 볼륨 설정 -->
+            <div id="settings-tab-volume" class="hidden flex-1 flex flex-col overflow-y-auto">
+                <p class="text-xs text-[#7d7077] mb-3">뽑기 효과음, 타이머 종료 알림음, 안내 차임벨 소리 크기를 조절합니다 🎵</p>
+
+                <div class="bg-[#fffdfb] border-2 border-[#ebdcd2] rounded-2xl p-4 sm:p-5 mb-4 shadow-2xs">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span id="volume-indicator-icon" class="text-2xl">🔊</span>
+                            <div>
+                                <span class="font-extrabold text-sm text-[#3d3339] block">마스터 볼륨</span>
+                                <span class="text-[11px] text-[#8a7b84]">알림음 및 효과음 크기</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="sound-volume-percent" class="text-lg font-black text-[#1b5935] bg-[#e8f8ed] px-3 py-1 rounded-xl border border-[#a2e6b9] font-mono">70%</span>
+                            <button id="volume-mute-btn" class="text-xs font-bold px-2.5 py-1.5 rounded-xl border border-[#ebdcd2] bg-white hover:bg-[#f8f4f0] text-[#7d7077] transition cursor-pointer shadow-2xs">음소거</button>
+                        </div>
+                    </div>
+
+                    <!-- 슬라이더 -->
+                    <div class="py-2">
+                        <input type="range" id="sound-volume-slider" min="0" max="100" value="70" step="1" class="w-full h-3 bg-[#e8e0d9] rounded-lg appearance-none cursor-pointer accent-[#22c55e]">
+                    </div>
+
+                    <div class="flex justify-between text-[11px] font-semibold text-[#8a7b84] px-0.5 mt-1">
+                        <span>🔇 0% (무음)</span>
+                        <span>50%</span>
+                        <span>🔊 100% (최대)</span>
+                    </div>
+
+                    <!-- 원클릭 볼륨 프리셋 -->
+                    <div class="mt-4 pt-3.5 border-t border-[#f2e8e1]">
+                        <span class="block text-xs font-bold text-[#7d7077] mb-2">⚡ 빠른 볼륨 설정</span>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button class="volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#ebdcd2] bg-white hover:bg-[#fbf7f4] text-[#4a4046] transition cursor-pointer" data-val="0">🔇 무음</button>
+                            <button class="volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#ebdcd2] bg-white hover:bg-[#fbf7f4] text-[#4a4046] transition cursor-pointer" data-val="30">🔉 30%</button>
+                            <button class="volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#a2e6b9] bg-[#e8f8ed] text-[#1b5935] transition cursor-pointer" data-val="70">🔊 70%</button>
+                            <button class="volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#ebdcd2] bg-white hover:bg-[#fbf7f4] text-[#4a4046] transition cursor-pointer" data-val="100">📢 100%</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 소리 미리듣기 테스트 버튼들 -->
+                <div class="bg-[#f9f5f1] border border-[#ebdcd2] rounded-2xl p-3.5 mb-4">
+                    <span class="block text-xs font-bold text-[#7d7077] mb-2">🎧 사운드 미리듣기 테스트</span>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="test-draw-tick-btn" class="flex flex-col items-center justify-center p-2 rounded-xl bg-white border border-[#ebdcd2] hover:border-[#b5e7c6] hover:bg-[#f4faf6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs">
+                            <span class="text-sm">🎲</span>
+                            <span class="text-[11px] font-bold mt-0.5">셔플 틱</span>
+                        </button>
+                        <button id="test-draw-fanfare-btn" class="flex flex-col items-center justify-center p-2 rounded-xl bg-white border border-[#ebdcd2] hover:border-[#b5e7c6] hover:bg-[#f4faf6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs">
+                            <span class="text-sm">🎉</span>
+                            <span class="text-[11px] font-bold mt-0.5">뽑기 팡파르</span>
+                        </button>
+                        <button id="test-timer-beep-btn" class="flex flex-col items-center justify-center p-2 rounded-xl bg-white border border-[#ebdcd2] hover:border-[#b5e7c6] hover:bg-[#f4faf6] text-[#3d3339] transition active:scale-95 cursor-pointer shadow-2xs">
+                            <span class="text-sm">⏰</span>
+                            <span class="text-[11px] font-bold mt-0.5">타이머 종료</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2 shrink-0">
+                    <button id="volume-tab-close-btn" class="w-full btn-pastel-mint font-bold py-3 rounded-2xl shadow transition cursor-pointer">완료</button>
+                </div>
+            </div>
+
+            <!-- 탭 3: 동물의 숲 주민 라인업 -->
             <div id="settings-tab-villagers" class="hidden flex-1 flex flex-col overflow-y-auto">
                 <p class="text-xs text-[#7d7077] mb-2.5">함께 뽑기에 등장하는 동물의 숲 최고 인기 주민 27인 라인업입니다 🍀</p>
                 <div id="villagers-roster-grid" class="grid grid-cols-3 gap-2 overflow-y-auto pr-1 pb-3 max-h-[360px]">
@@ -845,6 +978,12 @@
         </div>
     </div>
 
+    <!-- 테마 변경 플로팅 토스트 -->
+    <div id="theme-toast" class="fixed bottom-14 left-1/2 transform -translate-x-1/2 bg-[#2d252a]/95 text-white px-5 py-2.5 rounded-full shadow-2xl z-50 text-xs sm:text-sm font-bold flex items-center gap-2 pointer-events-none opacity-0 transition-all duration-300 backdrop-blur-md border border-white/20">
+        <span id="theme-toast-icon">🎨</span>
+        <span id="theme-toast-text">테마가 변경되었습니다</span>
+    </div>
+
     <footer class="relative z-10 w-full text-center py-3 text-xs text-[#7d7077] border-t border-[#ebdcd2] shrink-0 bg-white/90 backdrop-blur-md">
         스마트 교실 도구 • 닌텐도 동물의 숲 에디션 🍃
     </footer>
@@ -987,6 +1126,7 @@
 
         // 동물의 숲 뽑기 연동 DOM
         const resultVillagerInfo = document.getElementById('result-villager-info');
+        const resultVillagerLabel = document.getElementById('result-villager-label');
         const resultVillagerName = document.getElementById('result-villager-name');
 
         // 상단 활성 띠 배너 DOM
@@ -1016,11 +1156,39 @@
 
         // 설정 모달 탭 DOM
         const settingsTabListBtn = document.getElementById('settings-tab-list-btn');
+        const settingsTabThemeBtn = document.getElementById('settings-tab-theme-btn');
+        const settingsTabVolumeBtn = document.getElementById('settings-tab-volume-btn');
         const settingsTabVillagersBtn = document.getElementById('settings-tab-villagers-btn');
         const settingsTabList = document.getElementById('settings-tab-list');
+        const settingsTabTheme = document.getElementById('settings-tab-theme');
+        const settingsTabVolume = document.getElementById('settings-tab-volume');
         const settingsTabVillagers = document.getElementById('settings-tab-villagers');
         const villagersRosterGrid = document.getElementById('villagers-roster-grid');
         const villagersTabCloseBtn = document.getElementById('villagers-tab-close-btn');
+        const volumeTabCloseBtn = document.getElementById('volume-tab-close-btn');
+        const themeCardsGrid = document.getElementById('theme-cards-grid');
+        const themeTabCloseBtn = document.getElementById('theme-tab-close-btn');
+        const themeQuickBtn = document.getElementById('theme-quick-btn');
+        const headerThemeIcon = document.getElementById('header-theme-icon');
+        const headerThemeName = document.getElementById('header-theme-name');
+
+        // 볼륨 조절 DOM
+        const soundVolumeSlider = document.getElementById('sound-volume-slider');
+        const soundVolumePercent = document.getElementById('sound-volume-percent');
+        const volumeMuteBtn = document.getElementById('volume-mute-btn');
+        const volumeIndicatorIcon = document.getElementById('volume-indicator-icon');
+        const tabVolumeIcon = document.getElementById('tab-volume-icon');
+
+        // 볼륨 상태 (0.0 ~ 1.0, 기본값 70%)
+        let masterVolume = 0.7;
+        const savedVolume = localStorage.getItem('pyeongtaek_61_volume');
+        if (savedVolume !== null) {
+            const parsed = parseFloat(savedVolume);
+            if (!isNaN(parsed) && parsed >= 0 && parsed <= 1) {
+                masterVolume = parsed;
+            }
+        }
+        let lastNonZeroVolume = masterVolume > 0 ? masterVolume : 0.7;
 
         progressBar.style.strokeDasharray = CIRCUMFERENCE;
 
@@ -1087,16 +1255,64 @@
             timerStatusBadge.style.borderColor = badgeBorder;
             timerStatusText.textContent = statusLabel;
 
-            // 종료 3초 전부터 숫자가 커지며 깜빡임
-            if (isRunning && leftSeconds <= 3 && leftSeconds > 0) {
-                timerDisplay.classList.add('countdown-urgent');
-                timerStatusText.textContent = '🔥 3초 전 종료 임박!';
+            // 종료 10초 전부터 단계별 긴박 카운트다운 효과
+            if (isRunning && leftSeconds <= 10 && leftSeconds > 0) {
+                if (leftSeconds <= 3) {
+                    timerDisplay.classList.remove('countdown-urgent');
+                    timerDisplay.classList.add('countdown-super-urgent');
+                    timerStatusText.textContent = `🔥 ${leftSeconds}초 전 종료 임박!`;
+                    timerStatusBadge.style.backgroundColor = '#FFB088';
+                    timerStatusBadge.style.borderColor = '#fca174';
+                    timerStatusBadge.style.color = '#692909';
+                } else {
+                    timerDisplay.classList.remove('countdown-super-urgent');
+                    timerDisplay.classList.add('countdown-urgent');
+                    timerStatusText.textContent = `⚡ ${leftSeconds}초 남음! 카운트다운`;
+                    timerStatusBadge.style.backgroundColor = '#FFE88A';
+                    timerStatusBadge.style.borderColor = '#fae175';
+                    timerStatusBadge.style.color = '#5c4b07';
+                }
             } else {
-                timerDisplay.classList.remove('countdown-urgent');
+                timerDisplay.classList.remove('countdown-urgent', 'countdown-super-urgent');
+            }
+        }
+
+        // 10초 카운트다운 틱 사운드 (마지막 3초는 고음 강조 비프음)
+        function playCountdownTickSound(secondsLeft) {
+            if (masterVolume <= 0) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                // 3초 전(3, 2, 1초)은 경고음(A5: 880Hz), 그 외(10~4초)는 가벼운 우드블록 틱(660Hz)
+                const isUrgent = secondsLeft <= 3;
+                osc.type = isUrgent ? 'sine' : 'triangle';
+                const freq = isUrgent ? 880 : 660;
+                const duration = isUrgent ? 0.18 : 0.08;
+                const peakVolume = (isUrgent ? 0.22 : 0.12) * masterVolume;
+
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(peakVolume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log('Countdown sound error', e);
             }
         }
 
         function playBeepSound() {
+            if (masterVolume <= 0) return;
             try {
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1107,11 +1323,13 @@
 
                 const playTone = (delay, freq) => {
                     setTimeout(() => {
+                        if (masterVolume <= 0) return;
                         const osc = audioCtx.createOscillator();
                         const gain = audioCtx.createGain();
                         osc.type = 'sine';
                         osc.frequency.value = freq;
-                        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                        const vol = 0.25 * masterVolume;
+                        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
                         osc.connect(gain);
                         gain.connect(audioCtx.destination);
@@ -1137,6 +1355,11 @@
             timerInterval = setInterval(() => {
                 leftSeconds--;
                 updateDisplay();
+
+                // 10초 남았을 때 매 초 카운트다운 사운드 알림
+                if (leftSeconds <= 10 && leftSeconds > 0) {
+                    playCountdownTickSound(leftSeconds);
+                }
 
                 if (leftSeconds <= 0) {
                     clearInterval(timerInterval);
@@ -1242,6 +1465,7 @@
         }
 
         modeStudentBtn.addEventListener('click', () => {
+            if (isDrawing) return;
             currentMode = 'student';
             saveState();
             updateDrawUI();
@@ -1249,6 +1473,7 @@
         });
 
         modeGroupBtn.addEventListener('click', () => {
+            if (isDrawing) return;
             currentMode = 'group';
             saveState();
             updateDrawUI();
@@ -1256,6 +1481,7 @@
         });
 
         cardResetBtn.addEventListener('click', () => {
+            if (isDrawing) return;
             if (currentMode === 'student') {
                 remainingStudents = [...students];
             } else {
@@ -1272,9 +1498,70 @@
             missionText.textContent = customMsg || "뽑기 버튼을 누르세요!";
         }
 
-        // 랜덤 뽑기 실행 (귀여운 캐릭터 이미지 + 학생/모둠 이름 표시)
+        let isDrawing = false;
+
+        // 경쾌한 셔플 틱 사운드
+        function playShuffleTick() {
+            if (masterVolume <= 0) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(420 + Math.random() * 260, audioCtx.currentTime);
+                const vol = 0.035 * masterVolume;
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {}
+        }
+
+        // 결과 발표 팡파르 사운드
+        function playDrawSuccessSound() {
+            if (masterVolume <= 0) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const playTone = (delay, freq) => {
+                    setTimeout(() => {
+                        if (masterVolume <= 0) return;
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                        const vol = 0.18 * masterVolume;
+                        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.32);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 0.32);
+                    }, delay);
+                };
+                playTone(0, 523.25);   // C5
+                playTone(100, 659.25); // E5
+                playTone(200, 783.99); // G5
+                playTone(320, 1046.50); // C6
+            } catch (e) {}
+        }
+
+        // 랜덤 뽑기 실행 (약 1초간 동물의 숲 주민들이 부드럽게 섞이는 셔플 애니메이션 후 당첨 결과 발표)
         function executeDraw() {
-            let selectedItem = "";
+            if (isDrawing) return;
+
+            // 1. 유효성 검증 및 소진 시 자동 리필
             if (currentMode === 'student') {
                 if (students.length === 0) {
                     showPlaceholder("등록된 학생이 없습니다!");
@@ -1283,8 +1570,6 @@
                 if (remainingStudents.length === 0) {
                     remainingStudents = [...students];
                 }
-                const randomIndex = Math.floor(Math.random() * remainingStudents.length);
-                selectedItem = remainingStudents.splice(randomIndex, 1)[0];
             } else {
                 let allGroups = generateGroupsArray(totalGroups);
                 if (allGroups.length === 0) {
@@ -1294,38 +1579,115 @@
                 if (remainingGroups.length === 0) {
                     remainingGroups = [...allGroups];
                 }
-                const randomIndex = Math.floor(Math.random() * remainingGroups.length);
-                selectedItem = remainingGroups.splice(randomIndex, 1)[0];
             }
 
-            // 동물의 숲 인기 주민 중 랜덤 선택 및 응원 문구 선택
-            const chosenVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
-            const chosenTag = cheerTags[Math.floor(Math.random() * cheerTags.length)];
+            isDrawing = true;
 
-            // 카드 바운스 및 테두리 효과
-            missionCard.classList.add('scale-[1.02]', 'border-[#71c38a]');
-            setTimeout(() => {
-                missionCard.classList.remove('scale-[1.02]', 'border-[#71c38a]');
-            }, 250);
+            // 2. 버튼 및 카드 상태: 셔플 진행 중 표시
+            drawBtn.classList.add('opacity-85', 'pointer-events-none', 'cursor-wait');
+            drawBtn.innerHTML = `
+                <i data-lucide="sparkles" class="w-5 h-5 animate-spin"></i>
+                <span>주민들이 섞이는 중... 🍃</span>
+            `;
+            if (window.lucide) lucide.createIcons();
+            missionCard.classList.add('card-shuffling');
 
-            // 결과 뷰 표시
+            // 결과 뷰를 셔플 모드로 활성화
             drawPlaceholder.classList.add('hidden');
             drawResult.classList.remove('hidden');
             drawResult.classList.remove('animate-pop');
-            void drawResult.offsetWidth; // trigger reflow
-            drawResult.classList.add('animate-pop');
 
-            resultAvatarImg.src = chosenVillager.img;
-            resultAvatarImg.alt = `동물의 숲 ${chosenVillager.name} (${chosenVillager.species})`;
-            if (resultVillagerName) {
-                resultVillagerName.textContent = `${chosenVillager.name} (${chosenVillager.species}) ${chosenVillager.emoji}`;
+            if (resultVillagerLabel) {
+                resultVillagerLabel.textContent = "🍃 주민 섞이는 중...";
             }
-            resultNameText.textContent = selectedItem;
-            resultTagline.textContent = `"${chosenVillager.name}: ${chosenVillager.motto || chosenTag}"`;
-            resultBadgeEmoji.textContent = chosenVillager.emoji;
+            resultNameText.textContent = "두구두구... 🥁";
+            resultTagline.textContent = "누가 뽑힐까요? 주민들이 섞이는 중! ✨";
 
-            saveState();
-            updateDrawUI();
+            // 3. 약 1초간 동물의 숲 주민들이 빠르게 교차되는 셔플 애니메이션 실행
+            const shuffleDuration = 1000; // 약 1초
+            const shuffleIntervalMs = 75;  // 75ms마다 부드럽게 주민 교체
+            const startTime = Date.now();
+            const candidates = currentMode === 'student' ? [...remainingStudents] : [...remainingGroups];
+
+            const shuffleTimer = setInterval(() => {
+                // 랜덤 주민 및 이모지 빠르게 갱신
+                const randVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
+                resultAvatarImg.src = randVillager.img;
+                resultAvatarImg.alt = randVillager.name;
+                resultBadgeEmoji.textContent = randVillager.emoji;
+                if (resultVillagerName) {
+                    resultVillagerName.textContent = `${randVillager.name} (${randVillager.species}) ${randVillager.emoji}`;
+                }
+
+                // 학생/모둠 이름도 후보군 중에서 빠르게 롤링
+                if (candidates.length > 0) {
+                    const randCandidate = candidates[Math.floor(Math.random() * candidates.length)];
+                    resultNameText.textContent = randCandidate;
+                }
+
+                // 롤링 애니메이션 효과 적용
+                resultAvatarImg.classList.remove('animate-villager-shuffle');
+                void resultAvatarImg.offsetWidth;
+                resultAvatarImg.classList.add('animate-villager-shuffle');
+
+                playShuffleTick();
+
+                // 1초 경과 시 최종 추첨 확정
+                if (Date.now() - startTime >= shuffleDuration) {
+                    clearInterval(shuffleTimer);
+                    finishDraw();
+                }
+            }, shuffleIntervalMs);
+
+            // 4. 최종 결과 확정 및 발표
+            function finishDraw() {
+                let selectedItem = "";
+                if (currentMode === 'student') {
+                    const randomIndex = Math.floor(Math.random() * remainingStudents.length);
+                    selectedItem = remainingStudents.splice(randomIndex, 1)[0];
+                } else {
+                    const randomIndex = Math.floor(Math.random() * remainingGroups.length);
+                    selectedItem = remainingGroups.splice(randomIndex, 1)[0];
+                }
+
+                // 최종 당첨 주민 및 문구 확정
+                const chosenVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
+                const chosenTag = cheerTags[Math.floor(Math.random() * cheerTags.length)];
+
+                // 최종 결과 UI 바인딩
+                resultAvatarImg.src = chosenVillager.img;
+                resultAvatarImg.alt = `동물의 숲 ${chosenVillager.name} (${chosenVillager.species})`;
+                resultBadgeEmoji.textContent = chosenVillager.emoji;
+                if (resultVillagerLabel) {
+                    resultVillagerLabel.textContent = "🍃 함께 뽑힌 친구:";
+                }
+                if (resultVillagerName) {
+                    resultVillagerName.textContent = `${chosenVillager.name} (${chosenVillager.species}) ${chosenVillager.emoji}`;
+                }
+                resultNameText.textContent = selectedItem;
+                resultTagline.textContent = `"${chosenVillager.name}: ${chosenVillager.motto || chosenTag}"`;
+
+                // 애니메이션 및 효과 완료
+                resultAvatarImg.classList.remove('animate-villager-shuffle');
+                drawResult.classList.remove('animate-pop');
+                void drawResult.offsetWidth; // reflow
+                drawResult.classList.add('animate-pop');
+                missionCard.classList.remove('card-shuffling');
+
+                playDrawSuccessSound();
+
+                // 버튼 원래 상태로 복구
+                drawBtn.classList.remove('opacity-85', 'pointer-events-none', 'cursor-wait');
+                drawBtn.innerHTML = `
+                    <i data-lucide="dice-5" class="w-5 h-5 animate-spin" style="animation-duration: 3s;"></i>
+                    <span>랜덤 뽑기 실행</span>
+                `;
+                if (window.lucide) lucide.createIcons();
+
+                isDrawing = false;
+                saveState();
+                updateDrawUI();
+            }
         }
 
         drawBtn.addEventListener('click', executeDraw);
@@ -1462,6 +1824,7 @@
 
         // 부드러운 띵동~ 주목 차임벨
         function playNoticeChime() {
+            if (masterVolume <= 0) return;
             try {
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1472,11 +1835,13 @@
 
                 const playChimeTone = (delay, freq, duration) => {
                     setTimeout(() => {
+                        if (masterVolume <= 0) return;
                         const osc = audioCtx.createOscillator();
                         const gain = audioCtx.createGain();
                         osc.type = 'triangle';
                         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                        const vol = 0.2 * masterVolume;
+                        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
                         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
                         osc.connect(gain);
                         gain.connect(audioCtx.destination);
@@ -1666,22 +2031,398 @@
             });
         }
 
-        settingsTabListBtn.addEventListener('click', () => {
-            settingsTabListBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer";
-            settingsTabVillagersBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer";
-            settingsTabList.classList.remove('hidden');
-            settingsTabVillagers.classList.add('hidden');
+        // =========================================================
+        // 5-1. 수업 상황 및 사계절 배경 테마 시스템
+        // =========================================================
+        const THEMES = [
+            {
+                id: 'spring',
+                name: '봄 & 벚꽃 새학기',
+                shortName: '봄 & 벚꽃',
+                icon: '🌸',
+                category: 'season',
+                categoryName: '사계절 테마',
+                seasonTag: '3~5월 봄 · 새학기',
+                situation: '새학기 첫 만남 · 따뜻한 봄날 수업 · 활기찬 활동',
+                description: '화사한 벚꽃 잎이 흩날리는 교실 풍경! 새학기의 설렘과 따스한 봄 햇살 분위기를 전합니다.',
+                bgImage: '/src/assets/images/theme_spring_bg_1791734215442.jpg',
+                overlayBg: 'rgba(255, 248, 250, 0.78)',
+                accentColor: '#ff758f',
+                badgeBg: 'bg-[#ffeef2] text-[#c92a54] border-[#ffccd5]'
+            },
+            {
+                id: 'summer',
+                name: '여름 & 푸른 섬 바다',
+                shortName: '여름 & 바다',
+                icon: '🏝️',
+                category: 'season',
+                categoryName: '사계절 테마',
+                seasonTag: '6~8월 여름 · 무인도',
+                situation: '시원한 여름 수업 · 방학 전 활동 · 레크리에이션',
+                description: '청량한 에메랄드빛 바다와 야자수! 모동숲 무인도 해변에서 불어오는 시원한 바닷바람 감성입니다.',
+                bgImage: '/src/assets/images/theme_summer_bg_1791734229341.jpg',
+                overlayBg: 'rgba(240, 251, 255, 0.80)',
+                accentColor: '#0284c7',
+                badgeBg: 'bg-[#e0f7fa] text-[#00695c] border-[#80deea]'
+            },
+            {
+                id: 'autumn',
+                name: '가을 & 단풍 노을',
+                shortName: '가을 & 단풍',
+                icon: '🍁',
+                category: 'season',
+                categoryName: '사계절 테마',
+                seasonTag: '9~11월 가을 · 결실',
+                situation: '가을 학기 수업 · 조용한 독서 · 모둠별 심화 탐구',
+                description: '황금빛 단풍나무와 아늑한 오두막! 마음이 차분해지는 따뜻하고 평온한 가을 노을 풍경입니다.',
+                bgImage: '/src/assets/images/theme_autumn_bg_1791734255276.jpg',
+                overlayBg: 'rgba(255, 249, 240, 0.80)',
+                accentColor: '#d97706',
+                badgeBg: 'bg-[#fff3e0] text-[#b45309] border-[#ffe082]'
+            },
+            {
+                id: 'winter',
+                name: '겨울 & 눈꽃 교실',
+                shortName: '겨울 & 눈꽃',
+                icon: '❄️',
+                category: 'season',
+                categoryName: '사계절 테마',
+                seasonTag: '12~2월 겨울 · 연말',
+                situation: '겨울 학기 수업 · 학기말 정리 · 포근한 분위기',
+                description: '소복이 쌓인 하얀 눈과 은은한 창가 램프 조명! 아늑하고 포근하게 집중할 수 있는 겨울 교실입니다.',
+                bgImage: '/src/assets/images/theme_winter_bg_1791734269633.jpg',
+                overlayBg: 'rgba(244, 248, 254, 0.82)',
+                accentColor: '#2563eb',
+                badgeBg: 'bg-[#ebf4ff] text-[#1e40af] border-[#bfdbfe]'
+            },
+            {
+                id: 'chalkboard',
+                name: '집중 & 클래식 칠판',
+                shortName: '집중 & 칠판',
+                icon: '📚',
+                category: 'situation',
+                categoryName: '수업 상황 테마',
+                seasonTag: '시험 · 자습 · 단원평가',
+                situation: '정숙한 자습 시간 · 집중 문제 풀이 · 조용한 개인 학습',
+                description: '눈의 피로를 덜어주는 아늑한 칠판 그린 컬러와 서재 감성으로 수업 몰입도를 극대화합니다.',
+                bgImage: '/src/assets/images/theme_chalkboard_bg_1791734280096.jpg',
+                overlayBg: 'rgba(246, 250, 247, 0.84)',
+                accentColor: '#16a34a',
+                badgeBg: 'bg-[#e8f5e9] text-[#1b5e20] border-[#c8e6c9]'
+            },
+            {
+                id: 'sweets',
+                name: '달콤 스위츠 타운',
+                shortName: '스위츠 타운',
+                icon: '🍰',
+                category: 'situation',
+                categoryName: '수업 상황 테마',
+                seasonTag: '기본 테마 · 보드게임',
+                situation: '밝고 유쾌한 교실 수업 · 보드게임 · 레크리에이션',
+                description: '알록달록 달콤한 디저트와 귀여운 파스텔 마을! 아이들이 가장 좋아하는 발랄한 오리지널 테마입니다.',
+                bgImage: './src/assets/images/sanrio_sweets_bg_1789827732698.jpg',
+                overlayBg: 'rgba(255, 252, 248, 0.82)',
+                accentColor: '#ec4899',
+                badgeBg: 'bg-[#fce7f3] text-[#be185d] border-[#fbcfe8]'
+            },
+            {
+                id: 'forest',
+                name: '힐링 파스텔 숲',
+                shortName: '힐링 숲속',
+                icon: '🍃',
+                category: 'situation',
+                categoryName: '수업 상황 테마',
+                seasonTag: '자유 시간 · 미술/음악',
+                situation: '자유 모둠 시간 · 음악 감상 및 창작 · 편안한 힐링',
+                description: '동물의 숲 자연 감성이 물씬 풍기는 초록 숲속 일러스트로 교실에 편안함을 선물합니다.',
+                bgImage: './src/assets/images/sanrio_pastel_bg_1789827162879.jpg',
+                overlayBg: 'rgba(250, 254, 250, 0.82)',
+                accentColor: '#059669',
+                badgeBg: 'bg-[#d1fae5] text-[#065f46] border-[#a7f3d0]'
+            }
+        ];
+
+        let currentThemeId = localStorage.getItem('pyeongtaek_61_theme') || 'spring';
+        let currentThemeFilter = 'all';
+        let toastTimeout = null;
+
+        function showThemeToast(msg, icon = '🎨') {
+            const toast = document.getElementById('theme-toast');
+            const toastText = document.getElementById('theme-toast-text');
+            const toastIcon = document.getElementById('theme-toast-icon');
+            if (!toast || !toastText) return;
+            toastText.textContent = msg;
+            if (toastIcon) toastIcon.textContent = icon;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2400);
+        }
+
+        function applyTheme(themeId, showToast = true) {
+            const theme = THEMES.find(t => t.id === themeId) || THEMES[0];
+            currentThemeId = theme.id;
+            localStorage.setItem('pyeongtaek_61_theme', currentThemeId);
+
+            // 배경 이미지 및 오버레이 적용
+            document.body.style.backgroundImage = `url("${theme.bgImage}")`;
+            document.body.dataset.theme = theme.id;
+
+            const overlay = document.querySelector('.pastel-overlay');
+            if (overlay) {
+                overlay.style.backgroundColor = theme.overlayBg;
+            }
+
+            // 상단 헤더 퀵 버튼 상태 갱신
+            if (headerThemeIcon) headerThemeIcon.textContent = theme.icon;
+            if (headerThemeName) headerThemeName.textContent = theme.shortName;
+
+            // 테마 그리드 갱신
+            renderThemeGrid();
+
+            if (showToast) {
+                showThemeToast(`${theme.name} 테마가 적용되었습니다!`, theme.icon);
+                playShuffleTick();
+            }
+        }
+
+        function renderThemeGrid() {
+            if (!themeCardsGrid) return;
+            themeCardsGrid.innerHTML = '';
+
+            const filteredThemes = THEMES.filter(t => {
+                if (currentThemeFilter === 'season') return t.category === 'season';
+                if (currentThemeFilter === 'situation') return t.category === 'situation';
+                return true;
+            });
+
+            filteredThemes.forEach(theme => {
+                const isSelected = theme.id === currentThemeId;
+                const card = document.createElement('div');
+                card.className = `group relative flex flex-col rounded-2xl border-2 transition-all duration-200 overflow-hidden cursor-pointer shadow-xs ${
+                    isSelected 
+                        ? 'border-[#22c55e] bg-[#f0fdf4] ring-2 ring-[#86efac]' 
+                        : 'border-[#ebdcd2] bg-white hover:border-[#a3e2ca] hover:shadow-md'
+                }`;
+
+                card.innerHTML = `
+                    <div class="relative w-full h-28 sm:h-32 overflow-hidden bg-slate-100">
+                        <img src="${theme.bgImage}" alt="${theme.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+                        <div class="absolute top-2 left-2 flex items-center gap-1">
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full border shadow-2xs ${theme.badgeBg}">
+                                ${theme.seasonTag}
+                            </span>
+                        </div>
+                        ${isSelected ? `
+                            <div class="absolute top-2 right-2 bg-[#22c55e] text-white px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 shadow-xs animate-bounce">
+                                <span>✓</span> 적용 중
+                            </div>
+                        ` : ''}
+                        <div class="absolute bottom-1.5 left-2.5 right-2.5 flex items-center justify-between text-white drop-shadow-md">
+                            <span class="font-black text-sm tracking-tight flex items-center gap-1.5">
+                                <span>${theme.icon}</span> ${theme.name}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3 flex-1 flex flex-col justify-between">
+                        <div>
+                            <p class="text-[11px] font-bold text-[#1f6339] mb-1 flex items-center gap-1">
+                                <span>💡 추천:</span> ${theme.situation}
+                            </p>
+                            <p class="text-[11px] text-[#7d7077] line-clamp-2 leading-relaxed">
+                                ${theme.description}
+                            </p>
+                        </div>
+                        <div class="mt-2.5 pt-2 border-t border-[#f4eae3] flex items-center justify-between">
+                            <span class="text-[10px] font-semibold text-[#a698a0]">${theme.categoryName}</span>
+                            <button class="px-2.5 py-1 rounded-xl text-xs font-bold transition ${
+                                isSelected 
+                                    ? 'bg-[#22c55e] text-white cursor-default' 
+                                    : 'bg-[#f4efe9] hover:bg-[#C8F0E0] text-[#3d3339] group-hover:bg-[#C8F0E0]'
+                            }">
+                                ${isSelected ? '✓ 현재 적용 중' : '테마 적용하기'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                card.addEventListener('click', () => {
+                    applyTheme(theme.id, true);
+                });
+
+                themeCardsGrid.appendChild(card);
+            });
+        }
+
+        // 테마 필터 버튼 이벤트
+        document.querySelectorAll('.theme-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+                currentThemeFilter = filter;
+                document.querySelectorAll('.theme-filter-btn').forEach(b => {
+                    b.className = "theme-filter-btn flex-1 py-1.5 px-2 rounded-lg text-xs font-bold text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center";
+                });
+                btn.className = "theme-filter-btn flex-1 py-1.5 px-2 rounded-lg text-xs font-bold bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center";
+                renderThemeGrid();
+            });
         });
 
-        settingsTabVillagersBtn.addEventListener('click', () => {
-            settingsTabVillagersBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm bg-white text-[#3d3339] shadow-2xs transition cursor-pointer";
-            settingsTabListBtn.className = "py-2 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer";
-            settingsTabVillagers.classList.remove('hidden');
-            settingsTabList.classList.add('hidden');
-            renderVillagersRoster();
-        });
+        if (themeQuickBtn) {
+            themeQuickBtn.addEventListener('click', () => {
+                openSettingsModal();
+                activateSettingsTab('theme');
+            });
+        }
+
+        if (themeTabCloseBtn) {
+            themeTabCloseBtn.addEventListener('click', closeSettingsModal);
+        }
+
+        // 설정 모달 탭 전환 함수
+        function activateSettingsTab(tabName) {
+            const tabs = [
+                { name: 'list', btn: settingsTabListBtn, el: settingsTabList },
+                { name: 'theme', btn: settingsTabThemeBtn, el: settingsTabTheme },
+                { name: 'volume', btn: settingsTabVolumeBtn, el: settingsTabVolume },
+                { name: 'villagers', btn: settingsTabVillagersBtn, el: settingsTabVillagers }
+            ];
+
+            tabs.forEach(t => {
+                if (!t.btn) return;
+                if (t.name === tabName) {
+                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center";
+                    if (t.el) t.el.classList.remove('hidden');
+                } else {
+                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center";
+                    if (t.el) t.el.classList.add('hidden');
+                }
+            });
+
+            if (tabName === 'villagers') {
+                renderVillagersRoster();
+            } else if (tabName === 'theme') {
+                renderThemeGrid();
+            }
+        }
+
+        settingsTabListBtn.addEventListener('click', () => activateSettingsTab('list'));
+        if (settingsTabThemeBtn) {
+            settingsTabThemeBtn.addEventListener('click', () => activateSettingsTab('theme'));
+        }
+        settingsTabVolumeBtn.addEventListener('click', () => activateSettingsTab('volume'));
+        settingsTabVillagersBtn.addEventListener('click', () => activateSettingsTab('villagers'));
 
         villagersTabCloseBtn.addEventListener('click', closeSettingsModal);
+        if (volumeTabCloseBtn) {
+            volumeTabCloseBtn.addEventListener('click', closeSettingsModal);
+        }
+
+        // =========================================================
+        // 6. 볼륨 슬라이더 및 프리셋 / 미리듣기 제어 로직
+        // =========================================================
+        function updateVolumeUI() {
+            const pct = Math.round(masterVolume * 100);
+            if (soundVolumeSlider) soundVolumeSlider.value = pct;
+            if (soundVolumePercent) soundVolumePercent.textContent = `${pct}%`;
+
+            let icon = "🔊";
+            if (pct === 0) icon = "🔇";
+            else if (pct < 35) icon = "🔈";
+            else if (pct < 70) icon = "🔉";
+            else icon = "🔊";
+
+            if (volumeIndicatorIcon) volumeIndicatorIcon.textContent = icon;
+            if (tabVolumeIcon) tabVolumeIcon.textContent = icon;
+
+            if (volumeMuteBtn) {
+                if (pct === 0) {
+                    volumeMuteBtn.textContent = "음소거 해제";
+                    volumeMuteBtn.className = "text-xs font-bold px-2.5 py-1.5 rounded-xl border border-[#ffb4a2] bg-[#ffeae6] text-[#b23b24] transition cursor-pointer shadow-2xs";
+                } else {
+                    volumeMuteBtn.textContent = "음소거";
+                    volumeMuteBtn.className = "text-xs font-bold px-2.5 py-1.5 rounded-xl border border-[#ebdcd2] bg-white hover:bg-[#f8f4f0] text-[#7d7077] transition cursor-pointer shadow-2xs";
+                }
+            }
+
+            // 프리셋 버튼 하이라이트
+            document.querySelectorAll('.volume-preset-btn').forEach(btn => {
+                const val = parseInt(btn.getAttribute('data-val'));
+                if (val === pct) {
+                    btn.className = "volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#a2e6b9] bg-[#e8f8ed] text-[#1b5935] transition cursor-pointer";
+                } else {
+                    btn.className = "volume-preset-btn py-1.5 px-2 rounded-xl text-xs font-bold border border-[#ebdcd2] bg-white hover:bg-[#fbf7f4] text-[#4a4046] transition cursor-pointer";
+                }
+            });
+        }
+
+        function setVolume(val, save = true) {
+            const clamped = Math.max(0, Math.min(1, val));
+            masterVolume = clamped;
+            if (clamped > 0) {
+                lastNonZeroVolume = clamped;
+            }
+            if (save) {
+                localStorage.setItem('pyeongtaek_61_volume', masterVolume.toString());
+            }
+            updateVolumeUI();
+        }
+
+        if (soundVolumeSlider) {
+            soundVolumeSlider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value) / 100;
+                setVolume(val, true);
+            });
+        }
+
+        if (volumeMuteBtn) {
+            volumeMuteBtn.addEventListener('click', () => {
+                if (masterVolume > 0) {
+                    setVolume(0, true);
+                } else {
+                    setVolume(lastNonZeroVolume > 0 ? lastNonZeroVolume : 0.7, true);
+                }
+            });
+        }
+
+        document.querySelectorAll('.volume-preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = parseInt(btn.getAttribute('data-val')) / 100;
+                setVolume(val, true);
+            });
+        });
+
+        // 미리듣기 테스트 버튼
+        const testDrawTickBtn = document.getElementById('test-draw-tick-btn');
+        const testDrawFanfareBtn = document.getElementById('test-draw-fanfare-btn');
+        const testTimerBeepBtn = document.getElementById('test-timer-beep-btn');
+
+        if (testDrawTickBtn) {
+            testDrawTickBtn.addEventListener('click', () => {
+                playShuffleTick();
+                testDrawTickBtn.classList.add('scale-95');
+                setTimeout(() => testDrawTickBtn.classList.remove('scale-95'), 120);
+            });
+        }
+
+        if (testDrawFanfareBtn) {
+            testDrawFanfareBtn.addEventListener('click', () => {
+                playDrawSuccessSound();
+                testDrawFanfareBtn.classList.add('scale-95');
+                setTimeout(() => testDrawFanfareBtn.classList.remove('scale-95'), 120);
+            });
+        }
+
+        if (testTimerBeepBtn) {
+            testTimerBeepBtn.addEventListener('click', () => {
+                playBeepSound();
+                testTimerBeepBtn.classList.add('scale-95');
+                setTimeout(() => testTimerBeepBtn.classList.remove('scale-95'), 120);
+            });
+        }
 
         // ESC 키로도 언제든 기본 화면 복귀 지원
         window.addEventListener('keydown', (e) => {
@@ -1706,6 +2447,8 @@
         updateDisplay();
         updateDrawUI();
         updateNoticeDisplayUI();
+        updateVolumeUI();
+        applyTheme(currentThemeId, false);
     </script>
 </body>
 </html>
