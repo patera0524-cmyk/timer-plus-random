@@ -302,69 +302,261 @@
             border-radius: 1.25rem !important;
         }
 
-        /* [뽑기 전체화면] 전광판 스타일 */
+        /* [뽑기 디스플레이 상태 제어] hidden 클래스가 모든 모드에서 확실하게 최우선 적용되도록 보장 */
+        #draw-placeholder.hidden,
+        body.draw-fullscreen-active #draw-placeholder.hidden,
+        #draw-result.hidden,
+        body.draw-fullscreen-active #draw-result.hidden {
+            display: none !important;
+        }
+
+        /* [뽑기 전체화면] 화면 전체를 100% 꽉 채우는 초대형 전광판 스타일 */
+        body.draw-fullscreen-active #draw-section {
+            padding: 1rem 1.5rem !important;
+            box-sizing: border-box !important;
+        }
         body.draw-fullscreen-active #draw-section > div {
-            max-width: 92% !important;
-            width: 92% !important;
-            margin: 0 auto !important;
+            max-width: 100% !important;
+            width: 100% !important;
             height: 100% !important;
+            margin: 0 !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
+            gap: 0.5rem !important;
+        }
+        body.draw-fullscreen-active #draw-section > div > div:first-child {
+            flex: 1 1 0% !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        body.draw-fullscreen-active #draw-section .mb-4 {
+            margin-bottom: 0.35rem !important;
+            flex-shrink: 0 !important;
+        }
+        body.draw-fullscreen-active #draw-section .grid.grid-cols-2 {
+            margin-bottom: 0.35rem !important;
+            flex-shrink: 0 !important;
+        }
+        body.draw-fullscreen-active #draw-section .text-xs.text-\[\#7d7077\] {
+            margin-bottom: 0.35rem !important;
+            flex-shrink: 0 !important;
         }
         body.draw-fullscreen-active #mission-card {
-            height: 60vh !important;
-            max-height: 600px !important;
-            min-height: 380px !important;
-            padding: 1.25rem 1.5rem !important;
+            flex: 1 1 0% !important;
+            height: 100% !important;
+            width: 100% !important;
+            min-height: 0 !important;
+            max-height: none !important;
+            padding: 0 !important;
+            border-radius: 2.25rem !important;
+            border-width: 3px !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.14) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        body.draw-fullscreen-active #draw-result:not(.hidden) {
+            flex: 1 1 0% !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            padding: 1.5rem 2rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            position: relative !important;
+            box-sizing: border-box !important;
+        }
+        body.draw-fullscreen-active #draw-placeholder:not(.hidden) {
+            flex: 1 1 0% !important;
+            height: 100% !important;
+            min-height: 0 !important;
+            width: 100% !important;
+            padding: 2rem !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            box-sizing: border-box !important;
+        }
+        /* [좌측 그림 + 우측 이름 분할 레이아웃 & 초대형 폰트] 글씨가 그림을 가리지 않도록 2열 배치 */
+        #result-main-split {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            flex: 1 1 0% !important;
+            min-height: 0 !important;
+            box-sizing: border-box !important;
+            gap: 0.75rem !important;
+        }
+        #result-image-pane {
+            flex: 0 0 38% !important;
+            max-width: 40% !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 0 !important;
+        }
+        #result-avatar-img {
+            object-fit: contain !important;
+            object-position: center center !important;
+            opacity: 1 !important;
+            filter: contrast(106%) saturate(118%) brightness(101%) !important;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        #result-name-pane {
+            flex: 1 1 62% !important;
+            max-width: 62% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-height: 0 !important;
+            padding: 0.25rem !important;
+            overflow: hidden !important;
+        }
+        #result-name-text {
+            font-size: clamp(2rem, 4.2vw, 3.2rem) !important;
+            line-height: 1.15 !important;
+            font-weight: 950 !important;
+            letter-spacing: -0.025em !important;
+            color: #110d11 !important;
+            text-shadow: 0 0 20px #ffffff, 0 0 40px #ffffff, 0 3px 12px rgba(0, 0, 0, 0.12) !important;
+            word-break: keep-all !important;
+            white-space: nowrap !important;
+            text-align: center !important;
+            max-width: 100% !important;
+        }
+
+        /* [전체화면 모드에서의 분할 레이아웃: 대형 스크린 최적화 (좌측 전신 일러스트 + 우측 초대형 이름)] */
+        body.draw-fullscreen-active #result-main-split {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-evenly !important;
+            width: 100% !important;
+            flex: 1 1 0% !important;
+            min-height: 0 !important;
+            gap: 2.5rem !important;
+            padding: 0.5rem 2rem !important;
+        }
+        body.draw-fullscreen-active #result-image-pane {
+            flex: 0 0 44% !important;
+            max-width: 46% !important;
+            height: 100% !important;
+            max-height: 72vh !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        body.draw-fullscreen-active #result-image-pane > div {
+            max-height: 70vh !important;
+            border-radius: 2rem !important;
+            padding: 1.25rem !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 2px solid rgba(237, 227, 218, 0.9) !important;
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08) !important;
+        }
+        body.draw-fullscreen-active #result-avatar-img {
+            max-height: 65vh !important;
+            object-fit: contain !important;
+            opacity: 1 !important;
+            filter: contrast(108%) saturate(120%) brightness(101%) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.12)) !important;
+        }
+        body.draw-fullscreen-active #result-name-pane {
+            flex: 1 1 54% !important;
+            max-width: 56% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         body.draw-fullscreen-active #result-name-text {
-            font-size: 4.8rem !important;
-            line-height: 1.15 !important;
-            margin: 0.5rem 0 !important;
+            font-size: clamp(7.5rem, 16vw, 16.5rem) !important;
+            line-height: 0.95 !important;
+            letter-spacing: -0.04em !important;
             font-weight: 950 !important;
+            color: #110d11 !important;
+            text-shadow: 0 0 35px #ffffff, 0 0 70px #ffffff, 0 4px 25px rgba(0, 0, 0, 0.2) !important;
+            margin: auto 0 !important;
+            word-break: keep-all !important;
+            white-space: nowrap !important;
+            text-align: center !important;
+        }
+        body.draw-fullscreen-active .result-top-badge div {
+            font-size: 1.35rem !important;
+            padding: 0.5rem 1.6rem !important;
+        }
+        body.draw-fullscreen-active .result-bottom-pane {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
         body.draw-fullscreen-active #result-villager-info {
-            font-size: 1.3rem !important;
-            padding: 0.35rem 1.6rem !important;
-            margin-bottom: 0.4rem !important;
+            font-size: clamp(1.3rem, 2.1vw, 2.1rem) !important;
+            padding: 0.75rem 2rem 0.75rem 2.25rem !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-right: none !important;
+            border-width: 2.5px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
         }
         body.draw-fullscreen-active #result-tagline {
-            font-size: 1.6rem !important;
-            padding: 0.45rem 2rem !important;
-            font-weight: 900 !important;
-            margin-top: 0.4rem !important;
+            font-size: clamp(1.3rem, 2.1vw, 2.1rem) !important;
+            padding: 0.75rem 2.25rem 0.75rem 2rem !important;
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-width: 2.5px !important;
+            border-left-width: 1.5px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
         }
-        body.draw-fullscreen-active #draw-result .relative > div {
-            width: 9.5rem !important;
-            height: 9.5rem !important;
+        body.draw-fullscreen-active #result-villager-name {
+            font-size: inherit !important;
+            font-weight: 950 !important;
         }
         body.draw-fullscreen-active #mission-text {
-            font-size: 3.25rem !important;
-            line-height: 1.2 !important;
+            font-size: clamp(3.5rem, 6.5vw, 6rem) !important;
+            line-height: 1.15 !important;
         }
         body.draw-fullscreen-active #draw-placeholder span.text-3xl,
         body.draw-fullscreen-active #draw-placeholder span.text-4xl {
-            font-size: 5rem !important;
+            font-size: 6.5rem !important;
         }
         body.draw-fullscreen-active #draw-placeholder .w-18,
         body.draw-fullscreen-active #draw-placeholder .w-22 {
-            width: 8rem !important;
-            height: 8rem !important;
+            width: 9.5rem !important;
+            height: 9.5rem !important;
+        }
+        body.draw-fullscreen-active #draw-section > div > div:last-child {
+            margin-top: 0.25rem !important;
+            flex-shrink: 0 !important;
         }
         body.draw-fullscreen-active #draw-btn {
-            font-size: 2.25rem !important;
-            padding: 1.5rem !important;
-            border-radius: 1.5rem !important;
+            font-size: 2rem !important;
+            padding: 1.15rem 2rem !important;
+            border-radius: 1.25rem !important;
+            font-weight: 950 !important;
         }
         body.draw-fullscreen-active #mode-student-btn,
         body.draw-fullscreen-active #mode-group-btn {
-            font-size: 1.5rem !important;
-            padding: 1rem !important;
+            font-size: 1.35rem !important;
+            padding: 0.75rem !important;
+            border-radius: 1.1rem !important;
         }
         body.draw-fullscreen-active #status-count-text,
         body.draw-fullscreen-active #card-reset-btn {
-            font-size: 1.4rem !important;
+            font-size: 1.25rem !important;
         }
 
                 /* 전체화면 시 헤더 숨김 및 컴팩트한 기본 화면 돌아가기 버튼 */
@@ -572,10 +764,10 @@
                     </div>
 
                     <!-- 랜덤 뽑기 디스플레이 카드 (학생 이름과 함께 동물의 숲 인기 주민 사진이 나오는 영역) -->
-                    <div id="mission-card" class="relative w-full min-h-[19.5rem] md:min-h-[22rem] h-auto bg-gradient-to-b from-white to-[#fbf8f5] border-2 border-[#ebdcd2] rounded-3xl flex flex-col items-center justify-center p-3.5 sm:p-4 text-center shadow-xs cursor-pointer hover:border-[#67b579] transition-all transform hover:scale-[1.01] overflow-hidden">
+                    <div id="mission-card" class="relative w-full min-h-[19.5rem] md:min-h-[22rem] h-auto bg-gradient-to-b from-white to-[#fbf8f5] border-2 border-[#ebdcd2] rounded-3xl flex flex-col items-center justify-center p-0 text-center shadow-xs cursor-pointer hover:border-[#67b579] transition-all transform hover:scale-[1.01] overflow-hidden">
                         
-                        <!-- 초기 플레이스홀더 뷰 -->
-                        <div id="draw-placeholder" class="flex flex-col items-center justify-center transition-opacity duration-300 py-3">
+                        <!-- 초기 플레이스홀더 뷰 (기존 안내 문구) -->
+                        <div id="draw-placeholder" class="w-full h-full min-h-[19.5rem] md:min-h-[22rem] flex flex-col items-center justify-center transition-opacity duration-300 p-6 text-center">
                             <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#e8f8ed] border-2 border-[#b6e8c4] flex items-center justify-center mb-2.5 shadow-inner">
                                 <span class="text-3xl md:text-4xl animate-bounce">🎤</span>
                             </div>
@@ -583,24 +775,45 @@
                             <span class="text-xs text-[#8a7b84] mt-2 font-medium">카드를 누르거나 아래 버튼을 클릭하세요</span>
                         </div>
 
-                        <!-- 뽑기 결과 뷰 (동물의 숲 인기 주민 캐릭터 사진 + 학생/모둠 이름) -->
-                        <div id="draw-result" class="hidden w-full flex flex-col items-center justify-center py-1">
-                            <div class="relative mb-1.5 shrink-0">
-                                <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-3xl overflow-hidden border-2 md:border-3 border-[#a7e2b7] shadow-md bg-gradient-to-b from-[#f3faf5] to-white p-1 flex items-center justify-center">
-                                    <img id="result-avatar-img" src="./villagers/isabelle.jpg" data-filename="isabelle.jpg" alt="동물의 숲 여울이" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, this.dataset.filename || 'isabelle.jpg', '여울', '강아지', '🍃', '#ecc94b')" class="w-full h-full object-cover rounded-2xl filter drop-shadow-md transition-transform duration-300 transform hover:scale-105" />
+                        <!-- 뽑기 결과 뷰 (좌측 캐릭터 전신 일러스트 + 우측 초대형 학생/모둠 이름 + 하단 캐릭터/말문구 일체형 캡슐) -->
+                        <div id="draw-result" class="hidden w-full h-full min-h-[19.5rem] md:min-h-[22rem] flex flex-col justify-between items-center py-3.5 px-3 sm:px-6 relative z-10" style="display: none;">
+                            
+                            <!-- 상단 뱃지: 오늘의 당첨 주인공 표시 -->
+                            <div class="result-top-badge relative z-10 pt-0.5 flex items-center justify-center flex-shrink-0">
+                                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/95 backdrop-blur-md border border-[#e4d8cf] text-xs font-black text-[#5a4e56] shadow-2xs">
+                                    <span>🎉 오늘의 발표 주인공</span>
+                                    <span id="result-badge-emoji" class="text-sm">✨</span>
                                 </div>
-                                <span id="result-badge-emoji" class="absolute -top-1.5 -right-1.5 text-xl drop-shadow-sm">✨</span>
                             </div>
-                            <div id="result-villager-info" class="text-xs md:text-sm font-extrabold text-[#1a5b3a] bg-[#e6f7ec] px-3 py-0.5 rounded-full border border-[#a2e6b9] mb-1 flex items-center gap-1.5 shadow-2xs shrink-0">
-                                <span id="result-villager-label">🍃 함께 뽑힌 친구:</span>
-                                <span id="result-villager-name" class="font-black text-[#11532e]">토타케케 (강아지) 🎸</span>
+
+                            <!-- 중앙 메인 구역: 좌측(그림) + 우측(이름) 분리 레이아웃 (글씨가 그림을 가리지 않음) -->
+                            <div id="result-main-split" class="relative z-10 w-full flex-1 my-auto flex flex-row items-center justify-center gap-2 sm:gap-5 min-h-0">
+                                <!-- 좌측: 캐릭터 전신 일러스트 (선명하고 또렷하게 전신 노출, 글씨에 가려지지 않음) -->
+                                <div id="result-image-pane" class="w-[38%] max-w-[40%] h-full max-h-full flex items-center justify-center relative min-h-0">
+                                    <div class="w-full h-full max-h-[14.5rem] sm:max-h-[16.5rem] flex items-center justify-center p-1.5 sm:p-2.5 bg-white/75 rounded-2xl border border-[#ede3da]/90 shadow-2xs">
+                                        <img id="result-avatar-img" src="./villagers/isabelle.jpg" data-filename="isabelle.jpg" alt="동물의 숲 여울이" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, this.dataset.filename || 'isabelle.jpg', '여울', '강아지', '🍃', '#ecc94b')" class="w-full h-full object-contain object-center transition-all duration-300" />
+                                    </div>
+                                </div>
+
+                                <!-- 우측: 초대형 학생/모둠 이름 (그림을 가리지 않고 오른쪽에서 시원하고 큼직하게 표시, 한 줄 유지) -->
+                                <div id="result-name-pane" class="w-[62%] max-w-[62%] h-full max-h-full flex flex-col items-center justify-center text-center px-1 sm:px-2 min-h-0 overflow-hidden">
+                                    <div id="result-name-text" class="font-black text-[#110d11] tracking-tight leading-none text-center select-none filter drop-shadow-sm break-keep whitespace-nowrap max-w-full transition-all duration-300">
+                                        강래연
+                                    </div>
+                                </div>
                             </div>
-                            <div id="result-name-text" class="text-3xl sm:text-4xl md:text-5xl font-black text-[#3d3339] tracking-tight my-0.5 leading-tight shrink-0">
-                                강래연
+
+                            <!-- 하단: 캐릭터 이름과 말문구가 하나로 합쳐진 세련된 바 ("함께 뽑힌 친구" 삭제 및 일체화) -->
+                            <div class="result-bottom-pane relative z-10 w-full pt-1 flex flex-wrap items-center justify-center flex-shrink-0">
+                                <div id="result-villager-info" class="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-l-full rounded-r-none border border-r-0 border-[#a2e6b9] shadow-2xs text-xs sm:text-sm font-black text-[#0f4d2a] transition-all">
+                                    <span class="text-sm">🍃</span>
+                                    <span id="result-villager-name">토타케케 (강아지) 🎸</span>
+                                </div>
+                                <div id="result-tagline" class="inline-flex items-center gap-1.5 bg-[#e8f8ed]/95 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-r-full rounded-l-none border border-[#86d6a2] shadow-2xs text-xs sm:text-sm font-bold text-[#14532d] transition-all">
+                                    "음악은 자유로운 영혼의 언어야! 🎸"
+                                </div>
                             </div>
-                            <div id="result-tagline" class="text-xs md:text-sm font-bold text-[#1a5b3a] bg-[#d9f5e4] px-3 py-0.5 rounded-full border border-[#a2e6b9] shadow-2xs mt-0.5 shrink-0">
-                                오늘의 반짝이는 주인공! 🌟
-                            </div>
+
                         </div>
 
                     </div>
@@ -1566,7 +1779,9 @@
 
         function showPlaceholder(customMsg) {
             drawResult.classList.add('hidden');
+            drawResult.style.setProperty('display', 'none', 'important');
             drawPlaceholder.classList.remove('hidden');
+            drawPlaceholder.style.removeProperty('display');
             missionText.textContent = customMsg || "뽑기 버튼을 누르세요!";
         }
 
@@ -1664,16 +1879,18 @@
             if (window.lucide) lucide.createIcons();
             missionCard.classList.add('card-shuffling');
 
-            // 결과 뷰를 셔플 모드로 활성화
+            // 기존 안내 문구(플레이스홀더)를 완전히 숨기고 결과 뷰를 셔플 모드로 활성화
             drawPlaceholder.classList.add('hidden');
+            drawPlaceholder.style.setProperty('display', 'none', 'important');
             drawResult.classList.remove('hidden');
+            drawResult.style.removeProperty('display');
             drawResult.classList.remove('animate-pop');
 
             if (resultVillagerLabel) {
-                resultVillagerLabel.textContent = "🍃 주민 섞이는 중...";
+                resultVillagerLabel.textContent = "";
             }
             resultNameText.textContent = "두구두구... 🥁";
-            resultTagline.textContent = "누가 뽑힐까요? 주민들이 섞이는 중! ✨";
+            resultTagline.textContent = "주민들이 섞이는 중! ✨";
 
             // 3. 약 1초간 동물의 숲 주민들이 빠르게 교차되는 셔플 애니메이션 실행
             const shuffleDuration = 1000; // 약 1초
@@ -1731,15 +1948,19 @@
                 resultAvatarImg.alt = `동물의 숲 ${chosenVillager.name} (${chosenVillager.species})`;
                 resultBadgeEmoji.textContent = chosenVillager.emoji;
                 if (resultVillagerLabel) {
-                    resultVillagerLabel.textContent = "🍃 함께 뽑힌 친구:";
+                    resultVillagerLabel.textContent = "";
                 }
                 if (resultVillagerName) {
                     resultVillagerName.textContent = `${chosenVillager.name} (${chosenVillager.species}) ${chosenVillager.emoji}`;
                 }
                 resultNameText.textContent = selectedItem;
-                resultTagline.textContent = `"${chosenVillager.name}: ${chosenVillager.motto || chosenTag}"`;
+                resultTagline.textContent = chosenVillager.motto ? `"${chosenVillager.motto}"` : `"${chosenTag}"`;
 
-                // 애니메이션 및 효과 완료
+                // 애니메이션 및 효과 완료 (기존 문구는 완벽 은폐 유지, 결과 뷰 100% 꽉 채움)
+                drawPlaceholder.classList.add('hidden');
+                drawPlaceholder.style.setProperty('display', 'none', 'important');
+                drawResult.classList.remove('hidden');
+                drawResult.style.removeProperty('display');
                 resultAvatarImg.classList.remove('animate-villager-shuffle');
                 drawResult.classList.remove('animate-pop');
                 void drawResult.offsetWidth; // reflow
