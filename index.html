@@ -604,9 +604,9 @@
             <div>
                 <h1 class="text-base md:text-lg font-black text-[#3d3339] tracking-tight flex items-center gap-2">
                     스마트 교실 타이머
-                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dcf5e6] text-[#1e5a37] border border-[#a2e6b9]">동물의 숲 에디션 🍃</span>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dcf5e6] text-[#1e5a37] border border-[#a2e6b9]">동물의 숲 & 먼작귀 에디션 🍃🌸</span>
                 </h1>
-                <p class="text-xs text-[#7d7077]">수업 집중 타이머 & 동물의 숲 랜덤 뽑기</p>
+                <p class="text-xs text-[#7d7077]">수업 집중 타이머 & 동물의 숲 · 먼작귀 캐릭터 랜덤 뽑기</p>
             </div>
         </div>
         <div class="flex items-center space-x-2">
@@ -771,7 +771,7 @@
                             <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#e8f8ed] border-2 border-[#b6e8c4] flex items-center justify-center mb-2.5 shadow-inner">
                                 <span class="text-3xl md:text-4xl animate-bounce">🎤</span>
                             </div>
-                            <span id="mission-text" class="text-xl md:text-2xl font-black text-[#3d3339] tracking-wide">동물의 숲 주민과 함께 뽑기!</span>
+                            <span id="mission-text" class="text-xl md:text-2xl font-black text-[#3d3339] tracking-wide">오늘의 발표 주인공 뽑기!</span>
                             <span class="text-xs text-[#8a7b84] mt-2 font-medium">카드를 누르거나 아래 버튼을 클릭하세요</span>
                         </div>
 
@@ -791,7 +791,7 @@
                                 <!-- 좌측: 캐릭터 전신 일러스트 (선명하고 또렷하게 전신 노출, 글씨에 가려지지 않음) -->
                                 <div id="result-image-pane" class="w-[38%] max-w-[40%] h-full max-h-full flex items-center justify-center relative min-h-0">
                                     <div class="w-full h-full max-h-[14.5rem] sm:max-h-[16.5rem] flex items-center justify-center p-1.5 sm:p-2.5 bg-white/75 rounded-2xl border border-[#ede3da]/90 shadow-2xs">
-                                        <img id="result-avatar-img" src="./villagers/isabelle.jpg" data-filename="isabelle.jpg" alt="동물의 숲 여울이" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, this.dataset.filename || 'isabelle.jpg', '여울', '강아지', '🍃', '#ecc94b')" class="w-full h-full object-contain object-center transition-all duration-300" />
+                                        <img id="result-avatar-img" src="./villagers/chiikawa_chiikawa.jpg" data-filename="chiikawa_chiikawa.jpg" alt="먼작귀 치이카와" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, this.dataset.filename || 'chiikawa_chiikawa.jpg', '치이카와', '먼작귀', '🌸', '#ffcad4')" class="w-full h-full object-contain object-center transition-all duration-300 rounded-xl" />
                                     </div>
                                 </div>
 
@@ -806,11 +806,11 @@
                             <!-- 하단: 캐릭터 이름과 말문구가 하나로 합쳐진 세련된 바 ("함께 뽑힌 친구" 삭제 및 일체화) -->
                             <div class="result-bottom-pane relative z-10 w-full pt-1 flex flex-wrap items-center justify-center flex-shrink-0">
                                 <div id="result-villager-info" class="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-l-full rounded-r-none border border-r-0 border-[#a2e6b9] shadow-2xs text-xs sm:text-sm font-black text-[#0f4d2a] transition-all">
-                                    <span class="text-sm">🍃</span>
-                                    <span id="result-villager-name">토타케케 (강아지) 🎸</span>
+                                    <span id="result-series-icon" class="text-sm">🌸</span>
+                                    <span id="result-villager-name">치이카와 (먼작귀) 🌸</span>
                                 </div>
                                 <div id="result-tagline" class="inline-flex items-center gap-1.5 bg-[#e8f8ed]/95 backdrop-blur-md px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-r-full rounded-l-none border border-[#86d6a2] shadow-2xs text-xs sm:text-sm font-bold text-[#14532d] transition-all">
-                                    "음악은 자유로운 영혼의 언어야! 🎸"
+                                    "와... 와아...! 오늘도 용기 내서 힘내볼게! ✨"
                                 </div>
                             </div>
 
@@ -876,7 +876,7 @@
                     <span id="tab-volume-icon">🔊</span> 볼륨 조절
                 </button>
                 <button id="settings-tab-villagers-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center">
-                    🍃 주민(27인)
+                    🐾 캐릭터(34명)
                 </button>
             </div>
             
@@ -991,10 +991,40 @@
                 </div>
             </div>
 
-            <!-- 탭 3: 동물의 숲 주민 라인업 -->
+            <!-- 탭 4: 동물의 숲 & 먼작귀 캐릭터 라인업 및 등장 풀 설정 -->
             <div id="settings-tab-villagers" class="hidden flex-1 flex flex-col overflow-y-auto">
-                <p class="text-xs text-[#7d7077] mb-2.5">함께 뽑기에 등장하는 동물의 숲 최고 인기 주민 27인 라인업입니다 🍀</p>
-                <div id="villagers-roster-grid" class="grid grid-cols-3 gap-2 overflow-y-auto pr-1 pb-3 max-h-[360px]">
+                <!-- 랜덤 뽑기 등장 캐릭터 풀 설정 -->
+                <div class="mb-3 p-3 bg-[#f8faf8] border border-[#d6ebd9] rounded-2xl shadow-2xs shrink-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-[#2d4a36] flex items-center gap-1.5">
+                            <span>🎲</span> 랜덤 뽑기 등장 풀 선택
+                        </span>
+                        <span id="char-pool-badge" class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#e8f8ed] text-[#1b5935]">전체 34명 등장</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button id="pool-all-btn" class="py-1.5 px-1 rounded-xl text-xs font-bold transition cursor-pointer bg-[#1b5935] text-white shadow-2xs text-center">
+                            🌈 전체 (34명)
+                        </button>
+                        <button id="pool-chiikawa-btn" class="py-1.5 px-1 rounded-xl text-xs font-bold transition cursor-pointer bg-white text-[#5a4e56] hover:bg-[#fff0f3] border border-[#ebdcd2] text-center">
+                            🌸 먼작귀만 (7명)
+                        </button>
+                        <button id="pool-acnh-btn" class="py-1.5 px-1 rounded-xl text-xs font-bold transition cursor-pointer bg-white text-[#5a4e56] hover:bg-[#f2faf5] border border-[#ebdcd2] text-center">
+                            🍃 동숲만 (27명)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 캐릭터 도감 필터 및 설명 -->
+                <div class="flex items-center justify-between gap-1 mb-2 px-1 shrink-0">
+                    <p class="text-xs text-[#7d7077]">캐릭터 도감 <span class="text-[11px] text-[#a698a0]">(클릭 시 메인 마스코트 지정)</span></p>
+                    <div class="flex items-center gap-1">
+                        <button id="roster-filter-all" class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#e8f8ed] text-[#1b5935] cursor-pointer">전체(34)</button>
+                        <button id="roster-filter-chiikawa" class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-white text-[#7d7077] hover:bg-[#fff0f3] border border-[#ebdcd2] cursor-pointer">🌸먼작귀(7)</button>
+                        <button id="roster-filter-acnh" class="px-2 py-0.5 rounded-lg text-[11px] font-bold bg-white text-[#7d7077] hover:bg-[#f2faf5] border border-[#ebdcd2] cursor-pointer">🍃동숲(27)</button>
+                    </div>
+                </div>
+
+                <div id="villagers-roster-grid" class="grid grid-cols-3 gap-2 overflow-y-auto pr-1 pb-3 max-h-[330px]">
                     <!-- JS로 동적 생성 -->
                 </div>
                 <div class="pt-3 border-t border-[#ebdcd2] shrink-0">
@@ -1220,36 +1250,61 @@
 
         let currentMode = localStorage.getItem('pyeongtaek_61_draw_mode') || 'student';
 
-        // 닌텐도 게임 <동물의 숲> 최고 인기 주민 27인 공식 라인업 (고해상도 1024x1024 스퀘어 아바타 & SVG 벡터 안심 폴백)
+        // 동물의 숲 (27인) + 먼작귀 (7인) 총 34인 공식 캐릭터 라인업
         const acnhVillagers = [
-            { name: "토타케케", enName: "K.K. Slider", fileName: "kk_slider.jpg", species: "강아지", tag: "달콤한 통기타 연주자 🎸", img: "./villagers/kk_slider.jpg", emoji: "🎸", color: "#f6ad55", motto: "음악처럼 자유롭고 즐겁게 해보자고!" },
-            { name: "여울", enName: "Isabelle", fileName: "isabelle.jpg", species: "강아지", tag: "언제나 밝고 친절한 대표 비서 🍃", img: "./villagers/isabelle.jpg", emoji: "🍃", color: "#ecc94b", motto: "오늘도 모두 힘내서 집중해봐요!" },
-            { name: "너굴", enName: "Tom Nook", fileName: "tom_nook.jpg", species: "너구리", tag: "지금부터 집중하는 구리! 🦝", img: "./villagers/tom_nook.jpg", emoji: "🦝", color: "#b7791f", motto: "조금만 더 힘내면 쉬는 시간인 구리!" },
-            { name: "부옥", enName: "Celeste", fileName: "celeste.jpg", species: "부엉이", tag: "밤하늘 별을 사랑하는 천문학자 ✨", img: "./villagers/celeste.jpg", emoji: "✨", color: "#e53e3e", motto: "쏟아지는 별똥별처럼 눈부신 활약!" },
-            { name: "마스터", enName: "Brewster", fileName: "brewster.jpg", species: "비둘기", tag: "따뜻한 비둘기 둥지 바리스타 ☕", img: "./villagers/brewster.jpg", emoji: "☕", color: "#319795", motto: "…향긋한 커피 한 잔처럼 침착하게." },
-            { name: "미첼", enName: "Sasha", fileName: "sasha.jpg", species: "토끼", tag: "초롱초롱 귀여운 민트 토끼 🐰", img: "./villagers/sasha.jpg", emoji: "🐰", color: "#4fd1c5", motto: "헤헤, 우리 함께라면 다 잘될 거야!" },
-            { name: "레미", enName: "Sherb", fileName: "sherb.jpg", species: "염소", tag: "달콤한 낮잠을 좋아하는 하늘색 염소 🍨", img: "./villagers/sherb.jpg", emoji: "🍨", color: "#63b3ed", motto: "느긋느긋 편안한 마음으로 해봐요~" },
-            { name: "탁호", enName: "Zucker", fileName: "zucker.jpg", species: "문어", tag: "타코야끼를 쏙 빼닮은 귀염둥이 문어 🍡", img: "./villagers/zucker.jpg", emoji: "🍡", color: "#ed8936", motto: "쫀득쫀득 맛있는 집중력 발휘 약속!" },
-            { name: "문리나", enName: "Marina", fileName: "marina.jpg", species: "문어", tag: "꽃을 꽂은 사랑스러운 핑크 문어 🌸", img: "./villagers/marina.jpg", emoji: "🌸", color: "#f687b3", motto: "다정하고 씩씩하게 발표해봐요~" },
-            { name: "요비", enName: "Shino", fileName: "shino.jpg", species: "사슴", tag: "우아하고 고운 붉은 뿔 사슴 👘", img: "./villagers/shino.jpg", emoji: "👘", color: "#fc8181", motto: "멋진 무대처럼 아름답게 펼쳐봐요." },
-            { name: "잭슨", enName: "Raymond", fileName: "raymond.jpg", species: "고양이", tag: "시크한 안경 고양이 신사 👓", img: "./villagers/raymond.jpg", emoji: "👓", color: "#718096", motto: "스마트하게 문제를 해결해 볼까요?" },
-            { name: "미애", enName: "Judy", fileName: "judy.jpg", species: "아기곰", tag: "반짝이는 파스텔 눈망울 ✨", img: "./villagers/judy.jpg", emoji: "✨", color: "#b794f4", motto: "반짝반짝 빛나는 수업 시간이에요!" },
-            { name: "쭈니", enName: "Marshal", fileName: "marshal.jpg", species: "다람쥐", tag: "도도한 다람쥐 바리스타 🐿️", img: "./villagers/marshal.jpg", emoji: "🐿️", color: "#cbd5e0", motto: "훗, 완벽하게 집중하고 있군." },
-            { name: "사이다", enName: "Lolly", fileName: "lolly.jpg", species: "고양이", tag: "순둥순둥 사랑스러운 줄무늬 🐱", img: "./villagers/lolly.jpg", emoji: "🐱", color: "#a0aec0", motto: "차근차근 해보면 다 잘 될 거야~" },
-            { name: "애플", enName: "Apple", fileName: "apple.jpg", species: "햄스터", tag: "동글동글 발랄한 사과 볼 햄스터 🍎", img: "./villagers/apple.jpg", emoji: "🍎", color: "#f56565", motto: "통통 튀는 에너지로 화이팅 팡팡!" },
-            { name: "모니카", enName: "Audie", fileName: "audie.jpg", species: "늑대", tag: "선글라스를 낀 긍정 파워 늑대 🕶️", img: "./villagers/audie.jpg", emoji: "🕶️", color: "#ed8936", motto: "오늘도 세상에서 제일 멋지게!" },
-            { name: "비앙카", enName: "Whitney", fileName: "whitney.jpg", species: "늑대", tag: "기품 있고 우아한 은빛 늑대 ❄️", img: "./villagers/whitney.jpg", emoji: "❄️", color: "#e2e8f0", motto: "품격 있게 집중하는 모습이 아름다워." },
-            { name: "패치", enName: "Stitches", fileName: "stitches.jpg", species: "아기곰", tag: "알록달록 사랑스런 봉제인형 곰 🧸", img: "./villagers/stitches.jpg", emoji: "🧸", color: "#f6ad55", motto: "달콤한 간식처럼 즐거운 시간이야~" },
-            { name: "시베리아", enName: "Fang", fileName: "fang.jpg", species: "늑대", tag: "츤데레 매력의 믿음직한 늑대 🐺", img: "./villagers/fang.jpg", emoji: "🐺", color: "#cbd5e0", motto: "어디 한번 제대로 실력을 보여봐라." },
-            { name: "빙티", enName: "Bob", fileName: "bob.jpg", species: "고양이", tag: "엉뚱하고 유쾌한 보랏빛 고양이 💜", img: "./villagers/bob.jpg", emoji: "💜", color: "#9f7aea", motto: "헤헤, 신나게 재미있게 해보자구!" },
-            { name: "부케", enName: "Rosie", fileName: "rosie.jpg", species: "고양이", tag: "상큼발랄 영원한 인기 고양이 🌸", img: "./villagers/rosie.jpg", emoji: "🌸", color: "#63b3ed", motto: "반짝이는 아이돌처럼 빛나는 우리 반!" },
-            { name: "뽀야미", enName: "Flurry", fileName: "flurry.jpg", species: "햄스터", tag: "순백의 뽀송뽀송 하얀 햄스터 🤍", img: "./villagers/flurry.jpg", emoji: "🤍", color: "#edf2f7", motto: "조용조용 차분하게 힘내요~" },
-            { name: "크리스틴", enName: "Chrissy", fileName: "chrissy.jpg", species: "토끼", tag: "물방울무늬 핑크 토끼 아이돌 🎀", img: "./villagers/chrissy.jpg", emoji: "🎀", color: "#f687b3", motto: "발랄하게 톡톡! 집중력 최고!" },
-            { name: "프랑소와", enName: "Francine", fileName: "francine.jpg", species: "토끼", tag: "도도하고 세련된 블루 토끼 아이돌 💙", img: "./villagers/francine.jpg", emoji: "💙", color: "#4299e1", motto: "우아하고 차분하게 해결해봐요." },
-            { name: "차둘", enName: "Dom", fileName: "dom.jpg", species: "양", tag: "울먹이는 맑은 눈망울의 열정 양 🐑", img: "./villagers/dom.jpg", emoji: "🐑", color: "#fbd38d", motto: "으랏차! 끝까지 포기하지 마!" },
-            { name: "솔미", enName: "Fauna", fileName: "fauna.jpg", species: "사슴", tag: "따뜻하고 온화한 사슴 소녀 🦌", img: "./villagers/fauna.jpg", emoji: "🦌", color: "#dd6b20", motto: "다정한 마음으로 함께해요~" },
-            { name: "피터", enName: "Beau", fileName: "beau.jpg", species: "사슴", tag: "느긋하고 평화로운 자연주의 사슴 🌿", img: "./villagers/beau.jpg", emoji: "🌿", color: "#ed8936", motto: "느긋하지만 확실하게 해내자구." }
+            // [먼작귀 (Chiikawa) 7인 공식 라인업 - 신규 고화질 단독 일러스트]
+            { name: "치이카와", enName: "Chiikawa", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_chiikawa.jpg", species: "먼작귀", tag: "용기 내어 도전하는 하양 꼬마 🌸", img: "./villagers/chiikawa_chiikawa.jpg", emoji: "🌸", color: "#ffcad4", motto: "와... 와아...! 오늘도 용기 내서 힘내볼게! ✨" },
+            { name: "우사기", enName: "Usagi", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_usagi.jpg", species: "토끼", tag: "하이텐션 초특급 에너지 쾌활 토끼 🐰", img: "./villagers/chiikawa_usagi.jpg", emoji: "🐰", color: "#fef08a", motto: "우라~!! 야하! 푸룰룰루~ 기운차게 출발! ⚡" },
+            { name: "하치와레", enName: "Hachiware", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_hachiware.jpg", species: "고양이", tag: "긍정왕 만능 친구 파란 귀 고양이 🐱", img: "./villagers/chiikawa_hachiware.jpg", emoji: "🐱", color: "#93c5fd", motto: "어떻게든 될 거야! (난토카 나레!) 차근차근 해보자! 💙" },
+            { name: "모몬가", enName: "Momonga", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_momonga.jpg", species: "하늘다람쥐", tag: "풍성한 꼬리 귀여움 어필 장인 🐿️", img: "./villagers/chiikawa_momonga.jpg", emoji: "🐿️", color: "#bae6fd", motto: "귀여움 떨기! 당장 나를 멋지게 칭찬해줘! 💖" },
+            { name: "쿠리만쥬", enName: "Kurimanju", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_kurimanju.jpg", species: "밤만쥬", tag: "시원한 음료와 간식을 즐기는 미식가 🌰", img: "./villagers/chiikawa_kurimanju.jpg", emoji: "🌰", color: "#fed7aa", motto: "크하~ 시원하다! 여유를 갖고 차분하게 즐겨보자고! 🧃" },
+            { name: "랏코", enName: "Rakko", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_rakko.jpg", species: "해달", tag: "망토와 검을 든 최강의 듬직한 스승 🦦", img: "./villagers/chiikawa_rakko.jpg", emoji: "🗡️", color: "#fef3c7", motto: "내가 곁에 있겠다! 자신감을 갖고 용기 있게 전진해라! 🗡️" },
+            { name: "시사", enName: "Shisa", series: "chiikawa", seriesName: "먼작귀", fileName: "chiikawa_shisa.jpg", species: "시사", tag: "오키나와 수호신 활력 비타민 시사 🦁", img: "./villagers/chiikawa_shisa.jpg", emoji: "🦁", color: "#fed7aa", motto: "멘소~레! 성실하고 밝은 미소로 기분 좋게 파이팅! 🍜" },
+
+            // [동물의 숲 (Animal Crossing) 27인 라인업]
+            { name: "토타케케", enName: "K.K. Slider", series: "acnh", seriesName: "동물의 숲", fileName: "kk_slider.jpg", species: "강아지", tag: "달콤한 통기타 연주자 🎸", img: "./villagers/kk_slider.jpg", emoji: "🎸", color: "#f6ad55", motto: "음악처럼 자유롭고 즐겁게 해보자고!" },
+            { name: "여울", enName: "Isabelle", series: "acnh", seriesName: "동물의 숲", fileName: "isabelle.jpg", species: "강아지", tag: "언제나 밝고 친절한 대표 비서 🍃", img: "./villagers/isabelle.jpg", emoji: "🍃", color: "#ecc94b", motto: "오늘도 모두 힘내서 집중해봐요!" },
+            { name: "너굴", enName: "Tom Nook", series: "acnh", seriesName: "동물의 숲", fileName: "tom_nook.jpg", species: "너구리", tag: "지금부터 집중하는 구리! 🦝", img: "./villagers/tom_nook.jpg", emoji: "🦝", color: "#b7791f", motto: "조금만 더 힘내면 쉬는 시간인 구리!" },
+            { name: "부옥", enName: "Celeste", series: "acnh", seriesName: "동물의 숲", fileName: "celeste.jpg", species: "부엉이", tag: "밤하늘 별을 사랑하는 천문학자 ✨", img: "./villagers/celeste.jpg", emoji: "✨", color: "#e53e3e", motto: "쏟아지는 별똥별처럼 눈부신 활약!" },
+            { name: "마스터", enName: "Brewster", series: "acnh", seriesName: "동물의 숲", fileName: "brewster.jpg", species: "비둘기", tag: "따뜻한 비둘기 둥지 바리스타 ☕", img: "./villagers/brewster.jpg", emoji: "☕", color: "#319795", motto: "…향긋한 커피 한 잔처럼 침착하게." },
+            { name: "미첼", enName: "Sasha", series: "acnh", seriesName: "동물의 숲", fileName: "sasha.jpg", species: "토끼", tag: "초롱초롱 귀여운 민트 토끼 🐰", img: "./villagers/sasha.jpg", emoji: "🐰", color: "#4fd1c5", motto: "헤헤, 우리 함께라면 다 잘될 거야!" },
+            { name: "레미", enName: "Sherb", series: "acnh", seriesName: "동물의 숲", fileName: "sherb.jpg", species: "염소", tag: "달콤한 낮잠을 좋아하는 하늘색 염소 🍨", img: "./villagers/sherb.jpg", emoji: "🍨", color: "#63b3ed", motto: "느긋느긋 편안한 마음으로 해봐요~" },
+            { name: "탁호", enName: "Zucker", series: "acnh", seriesName: "동물의 숲", fileName: "zucker.jpg", species: "문어", tag: "타코야끼를 쏙 빼닮은 귀염둥이 문어 🍡", img: "./villagers/zucker.jpg", emoji: "🍡", color: "#ed8936", motto: "쫀득쫀득 맛있는 집중력 발휘 약속!" },
+            { name: "문리나", enName: "Marina", series: "acnh", seriesName: "동물의 숲", fileName: "marina.jpg", species: "문어", tag: "꽃을 꽂은 사랑스러운 핑크 문어 🌸", img: "./villagers/marina.jpg", emoji: "🌸", color: "#f687b3", motto: "다정하고 씩씩하게 발표해봐요~" },
+            { name: "요비", enName: "Shino", series: "acnh", seriesName: "동물의 숲", fileName: "shino.jpg", species: "사슴", tag: "우아하고 고운 붉은 뿔 사슴 👘", img: "./villagers/shino.jpg", emoji: "👘", color: "#fc8181", motto: "멋진 무대처럼 아름답게 펼쳐봐요." },
+            { name: "잭슨", enName: "Raymond", series: "acnh", seriesName: "동물의 숲", fileName: "raymond.jpg", species: "고양이", tag: "시크한 안경 고양이 신사 👓", img: "./villagers/raymond.jpg", emoji: "👓", color: "#718096", motto: "스마트하게 문제를 해결해 볼까요?" },
+            { name: "미애", enName: "Judy", series: "acnh", seriesName: "동물의 숲", fileName: "judy.jpg", species: "아기곰", tag: "반짝이는 파스텔 눈망울 ✨", img: "./villagers/judy.jpg", emoji: "✨", color: "#b794f4", motto: "반짝반짝 빛나는 수업 시간이에요!" },
+            { name: "쭈니", enName: "Marshal", series: "acnh", seriesName: "동물의 숲", fileName: "marshal.jpg", species: "다람쥐", tag: "도도한 다람쥐 바리스타 🐿️", img: "./villagers/marshal.jpg", emoji: "🐿️", color: "#cbd5e0", motto: "훗, 완벽하게 집중하고 있군." },
+            { name: "사이다", enName: "Lolly", series: "acnh", seriesName: "동물의 숲", fileName: "lolly.jpg", species: "고양이", tag: "순둥순둥 사랑스러운 줄무늬 🐱", img: "./villagers/lolly.jpg", emoji: "🐱", color: "#a0aec0", motto: "차근차근 해보면 다 잘 될 거야~" },
+            { name: "애플", enName: "Apple", series: "acnh", seriesName: "동물의 숲", fileName: "apple.jpg", species: "햄스터", tag: "동글동글 발랄한 사과 볼 햄스터 🍎", img: "./villagers/apple.jpg", emoji: "🍎", color: "#f56565", motto: "통통 튀는 에너지로 화이팅 팡팡!" },
+            { name: "모니카", enName: "Audie", series: "acnh", seriesName: "동물의 숲", fileName: "audie.jpg", species: "늑대", tag: "선글라스를 낀 긍정 파워 늑대 🕶️", img: "./villagers/audie.jpg", emoji: "🕶️", color: "#ed8936", motto: "오늘도 세상에서 제일 멋지게!" },
+            { name: "비앙카", enName: "Whitney", series: "acnh", seriesName: "동물의 숲", fileName: "whitney.jpg", species: "늑대", tag: "기품 있고 우아한 은빛 늑대 ❄️", img: "./villagers/whitney.jpg", emoji: "❄️", color: "#e2e8f0", motto: "품격 있게 집중하는 모습이 아름다워." },
+            { name: "패치", enName: "Stitches", series: "acnh", seriesName: "동물의 숲", fileName: "stitches.jpg", species: "아기곰", tag: "알록달록 사랑스런 봉제인형 곰 🧸", img: "./villagers/stitches.jpg", emoji: "🧸", color: "#f6ad55", motto: "달콤한 간식처럼 즐거운 시간이야~" },
+            { name: "시베리아", enName: "Fang", series: "acnh", seriesName: "동물의 숲", fileName: "fang.jpg", species: "늑대", tag: "츤데레 매력의 믿음직한 늑대 🐺", img: "./villagers/fang.jpg", emoji: "🐺", color: "#cbd5e0", motto: "어디 한번 제대로 실력을 보여봐라." },
+            { name: "빙티", enName: "Bob", series: "acnh", seriesName: "동물의 숲", fileName: "bob.jpg", species: "고양이", tag: "엉뚱하고 유쾌한 보랏빛 고양이 💜", img: "./villagers/bob.jpg", emoji: "💜", color: "#9f7aea", motto: "헤헤, 신나게 재미있게 해보자구!" },
+            { name: "부케", enName: "Rosie", series: "acnh", seriesName: "동물의 숲", fileName: "rosie.jpg", species: "고양이", tag: "상큼발랄 영원한 인기 고양이 🌸", img: "./villagers/rosie.jpg", emoji: "🌸", color: "#63b3ed", motto: "반짝이는 아이돌처럼 빛나는 우리 반!" },
+            { name: "뽀야미", enName: "Flurry", series: "acnh", seriesName: "동물의 숲", fileName: "flurry.jpg", species: "햄스터", tag: "순백의 뽀송뽀송 하얀 햄스터 🤍", img: "./villagers/flurry.jpg", emoji: "🤍", color: "#edf2f7", motto: "조용조용 차분하게 힘내요~" },
+            { name: "크리스틴", enName: "Chrissy", series: "acnh", seriesName: "동물의 숲", fileName: "chrissy.jpg", species: "토끼", tag: "물방울무늬 핑크 토끼 아이돌 🎀", img: "./villagers/chrissy.jpg", emoji: "🎀", color: "#f687b3", motto: "발랄하게 톡톡! 집중력 최고!" },
+            { name: "프랑소와", enName: "Francine", series: "acnh", seriesName: "동물의 숲", fileName: "francine.jpg", species: "토끼", tag: "도도하고 세련된 블루 토끼 아이돌 💙", img: "./villagers/francine.jpg", emoji: "💙", color: "#4299e1", motto: "우아하고 차분하게 해결해봐요." },
+            { name: "차둘", enName: "Dom", series: "acnh", seriesName: "동물의 숲", fileName: "dom.jpg", species: "양", tag: "울먹이는 맑은 눈망울의 열정 양 🐑", img: "./villagers/dom.jpg", emoji: "🐑", color: "#fbd38d", motto: "으랏차! 끝까지 포기하지 마!" },
+            { name: "솔미", enName: "Fauna", series: "acnh", seriesName: "동물의 숲", fileName: "fauna.jpg", species: "사슴", tag: "따뜻하고 온화한 사슴 소녀 🦌", img: "./villagers/fauna.jpg", emoji: "🦌", color: "#dd6b20", motto: "다정한 마음으로 함께해요~" },
+            { name: "피터", enName: "Beau", series: "acnh", seriesName: "동물의 숲", fileName: "beau.jpg", species: "사슴", tag: "느긋하고 평화로운 자연주의 사슴 🌿", img: "./villagers/beau.jpg", emoji: "🌿", color: "#ed8936", motto: "느긋하지만 확실하게 해내자구." }
         ];
+
+        // 랜덤 뽑기 등장 캐릭터 풀 관리 ('all' | 'chiikawa' | 'acnh')
+        let currentCharacterPool = localStorage.getItem('pyeongtaek_61_char_pool') || 'all';
+        let currentRosterFilter = 'all';
+
+        function getActiveVillagersPool() {
+            if (currentCharacterPool === 'chiikawa') {
+                const list = acnhVillagers.filter(v => v.series === 'chiikawa');
+                return list.length > 0 ? list : acnhVillagers;
+            } else if (currentCharacterPool === 'acnh') {
+                const list = acnhVillagers.filter(v => v.series === 'acnh');
+                return list.length > 0 ? list : acnhVillagers;
+            }
+            return acnhVillagers;
+        }
 
         // 100% 렌더링을 보장하는 고해상도 SVG 벡터 아바타 (오프라인, 네트워크 지연, 호스팅 환경 불문 절대 깨지지 않음)
         function getVillagerFallbackSvg(name, species, emoji, color) {
@@ -1374,12 +1429,23 @@
         const drawResult = document.getElementById('draw-result');
         const missionText = document.getElementById('mission-text');
         const resultAvatarImg = document.getElementById('result-avatar-img');
-        if (resultAvatarImg) {
-            setResilientImage(resultAvatarImg, acnhVillagers[currentMascotIndex] || acnhVillagers[1]);
-        }
         const resultNameText = document.getElementById('result-name-text');
         const resultTagline = document.getElementById('result-tagline');
         const resultBadgeEmoji = document.getElementById('result-badge-emoji');
+        const initialSeriesIcon = document.getElementById('result-series-icon');
+        const resultVillagerInfo = document.getElementById('result-villager-info');
+        const resultVillagerLabel = document.getElementById('result-villager-label');
+        const resultVillagerName = document.getElementById('result-villager-name');
+
+        const initialVillager = acnhVillagers[currentMascotIndex] || acnhVillagers[0];
+        if (resultAvatarImg) {
+            setResilientImage(resultAvatarImg, initialVillager);
+            resultAvatarImg.alt = `${initialVillager.name} (${initialVillager.species})`;
+        }
+        if (resultBadgeEmoji) resultBadgeEmoji.textContent = initialVillager.emoji;
+        if (initialSeriesIcon) initialSeriesIcon.textContent = initialVillager.series === 'chiikawa' ? '🌸' : '🍃';
+        if (resultVillagerName) resultVillagerName.textContent = `${initialVillager.name} (${initialVillager.species}) ${initialVillager.emoji}`;
+        if (resultTagline && initialVillager.motto) resultTagline.textContent = `"${initialVillager.motto}"`;
 
         const drawBtn = document.getElementById('draw-btn');
         const modeStudentBtn = document.getElementById('mode-student-btn');
@@ -1408,11 +1474,6 @@
         const customTimeSaveBtn = document.getElementById('custom-time-save-btn');
         const customTimeCancelBtn = document.getElementById('custom-time-cancel-btn');
         const customTimeCloseBtn = document.getElementById('custom-time-close-btn');
-
-        // 동물의 숲 뽑기 연동 DOM
-        const resultVillagerInfo = document.getElementById('result-villager-info');
-        const resultVillagerLabel = document.getElementById('result-villager-label');
-        const resultVillagerName = document.getElementById('result-villager-name');
 
         // 상단 활성 띠 배너 DOM
         const activeNoticeBanner = document.getElementById('active-notice-banner');
@@ -1890,20 +1951,25 @@
                 resultVillagerLabel.textContent = "";
             }
             resultNameText.textContent = "두구두구... 🥁";
-            resultTagline.textContent = "주민들이 섞이는 중! ✨";
+            resultTagline.textContent = "두근두근! 캐릭터들이 섞이는 중! ✨";
 
-            // 3. 약 1초간 동물의 숲 주민들이 빠르게 교차되는 셔플 애니메이션 실행
+            // 3. 약 1초간 캐릭터들이 빠르게 교차되는 셔플 애니메이션 실행
             const shuffleDuration = 1000; // 약 1초
-            const shuffleIntervalMs = 75;  // 75ms마다 부드럽게 주민 교체
+            const shuffleIntervalMs = 75;  // 75ms마다 부드럽게 캐릭터 교체
             const startTime = Date.now();
             const candidates = currentMode === 'student' ? [...remainingStudents] : [...remainingGroups];
+            const activePool = getActiveVillagersPool();
 
             const shuffleTimer = setInterval(() => {
-                // 랜덤 주민 및 이모지 빠르게 갱신
-                const randVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
+                // 랜덤 캐릭터 및 이모지 빠르게 갱신
+                const randVillager = activePool[Math.floor(Math.random() * activePool.length)];
                 setResilientImage(resultAvatarImg, randVillager);
                 resultAvatarImg.alt = randVillager.name;
                 resultBadgeEmoji.textContent = randVillager.emoji;
+                const resultSeriesIcon = document.getElementById('result-series-icon');
+                if (resultSeriesIcon) {
+                    resultSeriesIcon.textContent = randVillager.series === 'chiikawa' ? '🌸' : '🍃';
+                }
                 if (resultVillagerName) {
                     resultVillagerName.textContent = `${randVillager.name} (${randVillager.species}) ${randVillager.emoji}`;
                 }
@@ -1939,16 +2005,21 @@
                     selectedItem = remainingGroups.splice(randomIndex, 1)[0];
                 }
 
-                // 최종 당첨 주민 및 문구 확정
-                const chosenVillager = acnhVillagers[Math.floor(Math.random() * acnhVillagers.length)];
+                // 최종 당첨 캐릭터 및 문구 확정
+                const pool = getActiveVillagersPool();
+                const chosenVillager = pool[Math.floor(Math.random() * pool.length)];
                 const chosenTag = cheerTags[Math.floor(Math.random() * cheerTags.length)];
 
                 // 최종 결과 UI 바인딩
                 setResilientImage(resultAvatarImg, chosenVillager);
-                resultAvatarImg.alt = `동물의 숲 ${chosenVillager.name} (${chosenVillager.species})`;
+                resultAvatarImg.alt = `${chosenVillager.seriesName || '캐릭터'} ${chosenVillager.name} (${chosenVillager.species})`;
                 resultBadgeEmoji.textContent = chosenVillager.emoji;
                 if (resultVillagerLabel) {
                     resultVillagerLabel.textContent = "";
+                }
+                const resultSeriesIcon = document.getElementById('result-series-icon');
+                if (resultSeriesIcon) {
+                    resultSeriesIcon.textContent = chosenVillager.series === 'chiikawa' ? '🌸' : '🍃';
                 }
                 if (resultVillagerName) {
                     resultVillagerName.textContent = `${chosenVillager.name} (${chosenVillager.species}) ${chosenVillager.emoji}`;
@@ -2303,26 +2374,140 @@
         });
 
         // =========================================================
-        // 5. 설정 모달 내 동물의 숲 27인 주민 갤러리 렌더링
+        // 5. 설정 모달 내 동물의 숲 & 먼작귀 34인 캐릭터 갤러리 및 풀 관리
         // =========================================================
+        function updatePoolButtonsUI() {
+            const poolAllBtn = document.getElementById('pool-all-btn');
+            const poolChiikawaBtn = document.getElementById('pool-chiikawa-btn');
+            const poolAcnhBtn = document.getElementById('pool-acnh-btn');
+            const charPoolBadge = document.getElementById('char-pool-badge');
+
+            const activeBtnClass = 'py-1.5 px-1 rounded-xl text-xs font-bold transition cursor-pointer bg-[#1b5935] text-white shadow-2xs text-center';
+            const inactiveBtnClass = 'py-1.5 px-1 rounded-xl text-xs font-bold transition cursor-pointer bg-white text-[#5a4e56] hover:bg-[#f6fbf8] border border-[#ebdcd2] text-center';
+
+            if (poolAllBtn) poolAllBtn.className = currentCharacterPool === 'all' ? activeBtnClass : inactiveBtnClass;
+            if (poolChiikawaBtn) poolChiikawaBtn.className = currentCharacterPool === 'chiikawa' ? activeBtnClass.replace('bg-[#1b5935]', 'bg-[#d946ef]') : inactiveBtnClass;
+            if (poolAcnhBtn) poolAcnhBtn.className = currentCharacterPool === 'acnh' ? activeBtnClass : inactiveBtnClass;
+
+            if (charPoolBadge) {
+                if (currentCharacterPool === 'chiikawa') {
+                    charPoolBadge.textContent = '🌸 먼작귀만 등장 (7명)';
+                    charPoolBadge.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#fdf2f8] text-[#be185d] border border-[#fbcfe8]';
+                } else if (currentCharacterPool === 'acnh') {
+                    charPoolBadge.textContent = '🍃 동물의 숲만 등장 (27명)';
+                    charPoolBadge.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#e8f8ed] text-[#1b5935] border border-[#a2e6b9]';
+                } else {
+                    charPoolBadge.textContent = '🌈 전체 34명 등장 (동숲 + 먼작귀)';
+                    charPoolBadge.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#e8f8ed] text-[#1b5935] border border-[#a2e6b9]';
+                }
+            }
+        }
+
+        function setCharacterPool(pool) {
+            currentCharacterPool = pool;
+            localStorage.setItem('pyeongtaek_61_char_pool', pool);
+            updatePoolButtonsUI();
+        }
+
+        // 도감 필터 버튼 UI 동기화
+        function updateRosterFilterButtonsUI() {
+            const filterAll = document.getElementById('roster-filter-all');
+            const filterChiikawa = document.getElementById('roster-filter-chiikawa');
+            const filterAcnh = document.getElementById('roster-filter-acnh');
+
+            const activeClass = 'px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#1b5935] text-white shadow-2xs cursor-pointer';
+            const inactiveClass = 'px-2 py-0.5 rounded-lg text-[11px] font-bold bg-white text-[#7d7077] hover:bg-[#f6fbf8] border border-[#ebdcd2] cursor-pointer';
+
+            if (filterAll) filterAll.className = currentRosterFilter === 'all' ? activeClass : inactiveClass;
+            if (filterChiikawa) filterChiikawa.className = currentRosterFilter === 'chiikawa' ? activeClass.replace('bg-[#1b5935]', 'bg-[#d946ef]') : inactiveClass;
+            if (filterAcnh) filterAcnh.className = currentRosterFilter === 'acnh' ? activeClass : inactiveClass;
+        }
+
         function renderVillagersRoster() {
+            if (!villagersRosterGrid) return;
             villagersRosterGrid.innerHTML = '';
-            acnhVillagers.forEach((villager) => {
+            updatePoolButtonsUI();
+            updateRosterFilterButtonsUI();
+
+            const filteredList = currentRosterFilter === 'all'
+                ? acnhVillagers
+                : acnhVillagers.filter(v => v.series === currentRosterFilter);
+
+            filteredList.forEach((villager) => {
+                const originalIndex = acnhVillagers.indexOf(villager);
+                const isCurrentMascot = originalIndex === currentMascotIndex;
+                const isChiikawa = villager.series === 'chiikawa';
+
                 const card = document.createElement('div');
-                card.className = 'flex flex-col items-center p-2.5 rounded-2xl border border-[#ebdcd2] bg-white hover:bg-[#f2faf5] hover:border-[#71c38a] transition shadow-2xs text-center';
+                card.className = `flex flex-col items-center p-2.5 rounded-2xl border transition shadow-2xs text-center cursor-pointer relative group ${
+                    isCurrentMascot
+                        ? 'border-[#22c55e] bg-[#f0fdf4] ring-2 ring-[#22c55e]/30'
+                        : isChiikawa
+                            ? 'border-[#fbcfe8] bg-[#fffafc] hover:bg-[#fff0f6] hover:border-[#f472b6]'
+                            : 'border-[#ebdcd2] bg-white hover:bg-[#f2faf5] hover:border-[#71c38a]'
+                }`;
+
                 card.innerHTML = `
-                    <div class="w-14 h-14 rounded-2xl overflow-hidden border border-[#cfead7] bg-white p-0.5 mb-1.5 shadow-2xs flex items-center justify-center">
-                        <img src="./villagers/${villager.fileName}" data-filename="${villager.fileName}" alt="${villager.name}" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, '${villager.fileName}', '${villager.name}', '${villager.species}', '${villager.emoji}', '${villager.color}')" class="w-full h-full object-cover rounded-xl" />
+                    <div class="absolute top-1.5 left-1.5">
+                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded-full ${
+                            isChiikawa
+                                ? 'bg-[#fce7f3] text-[#be185d]'
+                                : 'bg-[#e8f8ed] text-[#166534]'
+                        }">${isChiikawa ? '🌸 먼작귀' : '🍃 동숲'}</span>
+                    </div>
+                    ${isCurrentMascot ? '<span class="absolute top-1.5 right-1.5 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-[#22c55e] text-white">⭐ 대표</span>' : ''}
+                    <div class="w-14 h-14 rounded-2xl overflow-hidden border ${isChiikawa ? 'border-[#fbcfe8]' : 'border-[#cfead7]'} bg-white p-0.5 mb-1.5 mt-3 shadow-2xs flex items-center justify-center">
+                        <img src="./villagers/${villager.fileName}" data-filename="${villager.fileName}" alt="${villager.name}" onerror="window.handleVillagerImgError && window.handleVillagerImgError(this, '${villager.fileName}', '${villager.name}', '${villager.species}', '${villager.emoji}', '${villager.color}')" class="w-full h-full object-contain rounded-xl" />
                     </div>
                     <span class="font-extrabold text-xs text-[#3d3339] flex items-center gap-1">${villager.name} ${villager.emoji}</span>
                     <span class="text-[10px] text-[#8a7b84]">${villager.species}</span>
-                    <p class="mt-1 text-[9px] font-bold text-[#1b5935] bg-[#e8f8ed] px-2 py-0.5 rounded-full truncate max-w-full" title="${villager.tag}">
+                    <p class="mt-1 text-[9px] font-bold ${isChiikawa ? 'text-[#9d174d] bg-[#fdf2f8]' : 'text-[#1b5935] bg-[#e8f8ed]'} px-2 py-0.5 rounded-full truncate max-w-full" title="${villager.tag}">
                         ${villager.tag}
                     </p>
                 `;
+
+                // 클릭 시 메인 화면 마스코트 지정
+                card.addEventListener('click', () => {
+                    currentMascotIndex = originalIndex;
+                    localStorage.setItem('pyeongtaek_61_mascot_idx', currentMascotIndex);
+                    if (resultAvatarImg) {
+                        setResilientImage(resultAvatarImg, villager);
+                        resultAvatarImg.alt = `${villager.name} (${villager.species})`;
+                    }
+                    if (resultBadgeEmoji) {
+                        resultBadgeEmoji.textContent = villager.emoji;
+                    }
+                    const resultSeriesIcon = document.getElementById('result-series-icon');
+                    if (resultSeriesIcon) {
+                        resultSeriesIcon.textContent = villager.series === 'chiikawa' ? '🌸' : '🍃';
+                    }
+                    if (resultVillagerName) {
+                        resultVillagerName.textContent = `${villager.name} (${villager.species}) ${villager.emoji}`;
+                    }
+                    if (resultTagline && villager.motto) {
+                        resultTagline.textContent = `"${villager.motto}"`;
+                    }
+                    renderVillagersRoster();
+                });
+
                 villagersRosterGrid.appendChild(card);
             });
         }
+
+        // 풀 및 필터 이벤트 바인딩
+        const poolAllBtn = document.getElementById('pool-all-btn');
+        const poolChiikawaBtn = document.getElementById('pool-chiikawa-btn');
+        const poolAcnhBtn = document.getElementById('pool-acnh-btn');
+        if (poolAllBtn) poolAllBtn.addEventListener('click', () => setCharacterPool('all'));
+        if (poolChiikawaBtn) poolChiikawaBtn.addEventListener('click', () => setCharacterPool('chiikawa'));
+        if (poolAcnhBtn) poolAcnhBtn.addEventListener('click', () => setCharacterPool('acnh'));
+
+        const rosterFilterAll = document.getElementById('roster-filter-all');
+        const rosterFilterChiikawa = document.getElementById('roster-filter-chiikawa');
+        const rosterFilterAcnh = document.getElementById('roster-filter-acnh');
+        if (rosterFilterAll) rosterFilterAll.addEventListener('click', () => { currentRosterFilter = 'all'; renderVillagersRoster(); });
+        if (rosterFilterChiikawa) rosterFilterChiikawa.addEventListener('click', () => { currentRosterFilter = 'chiikawa'; renderVillagersRoster(); });
+        if (rosterFilterAcnh) rosterFilterAcnh.addEventListener('click', () => { currentRosterFilter = 'acnh'; renderVillagersRoster(); });
 
         // =========================================================
         // 5-1. 수업 상황 및 사계절 배경 테마 시스템
