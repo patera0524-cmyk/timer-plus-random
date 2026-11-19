@@ -93,7 +93,7 @@
 
         /* 크기를 줄였을 때 컨트롤 버튼들이 찌그러지지 않고 잘 보이도록 최적화 */
         #start-btn, #pause-btn, #stop-btn, #reset-btn {
-            min-height: 44px;
+            min-height: 42px;
             font-weight: 800;
             letter-spacing: -0.02em;
             display: inline-flex;
@@ -102,12 +102,42 @@
             transition: all 0.15s ease-in-out;
             user-select: none;
         }
+        #timer-display {
+            font-size: clamp(2rem, min(7.8vh, 11vw), 5.25rem);
+            line-height: 1.05;
+        }
         @media (max-width: 640px) {
             #start-btn, #pause-btn, #stop-btn, #reset-btn {
-                padding: 0.55rem 0.25rem !important;
+                padding: 0.5rem 0.25rem !important;
                 font-size: 0.75rem !important;
                 min-height: 40px;
                 border-radius: 0.75rem !important;
+            }
+        }
+        @media (max-height: 740px) {
+            body:not(.timer-fullscreen-active) #timer-section {
+                padding: 0.75rem 1rem !important;
+                gap: 0.35rem !important;
+            }
+            body:not(.timer-fullscreen-active) #timer-section .preset-btn,
+            body:not(.timer-fullscreen-active) #timer-section #custom-time-btn {
+                padding: 0.25rem 0.65rem !important;
+                font-size: 0.75rem !important;
+            }
+            body:not(.timer-fullscreen-active) #start-btn,
+            body:not(.timer-fullscreen-active) #pause-btn,
+            body:not(.timer-fullscreen-active) #stop-btn,
+            body:not(.timer-fullscreen-active) #reset-btn {
+                padding-top: 0.5rem !important;
+                padding-bottom: 0.5rem !important;
+                min-height: 40px !important;
+            }
+            body:not(.timer-fullscreen-active) #draw-section {
+                padding: 0.85rem 1rem !important;
+            }
+            body:not(.timer-fullscreen-active) #draw-btn {
+                padding-top: 0.65rem !important;
+                padding-bottom: 0.65rem !important;
             }
         }
 
@@ -213,14 +243,17 @@
             inset: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
+            height: 100dvh !important;
             max-width: 100vw !important;
             z-index: 99999 !important;
             background: #fffdfa !important;
-            padding: 2rem 3.5rem !important;
+            padding: clamp(0.65rem, 2vh, 2rem) clamp(0.85rem, 3vw, 3.5rem) !important;
+            gap: clamp(0.25rem, 1vh, 0.75rem) !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: space-between !important;
-            overflow: hidden !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
             box-shadow: none !important;
             border-radius: 0 !important;
             border: none !important;
@@ -230,76 +263,85 @@
         body.timer-fullscreen-active #timer-section > div:first-child,
         body.timer-fullscreen-active #timer-section .w-full.max-w-2xl,
         body.timer-fullscreen-active #timer-section .w-full.max-w-xl {
-            max-width: 94% !important;
+            max-width: 96% !important;
         }
 
-        /* [타이머 전체화면] "지금은:" 및 활동 문구 초대형 확대 (2~3배 이상) */
+        /* [타이머 전체화면] "지금은:" 및 활동 문구 (화면 높이에 맞춰 유연하게 확대) */
         body.timer-fullscreen-active #activity-input {
-            font-size: 2.25rem !important;
-            line-height: 2.75rem !important;
+            font-size: clamp(0.95rem, 2.3vh, 2.15rem) !important;
+            line-height: 1.3 !important;
             font-weight: 900 !important;
             color: #2b2227 !important;
         }
         body.timer-fullscreen-active .activity-label {
-            font-size: 2.25rem !important;
+            font-size: clamp(0.95rem, 2.3vh, 2.15rem) !important;
             font-weight: 900 !important;
         }
         body.timer-fullscreen-active .activity-label svg,
         body.timer-fullscreen-active .activity-label i {
-            width: 2.25rem !important;
-            height: 2.25rem !important;
+            width: clamp(1rem, 2.3vh, 2.15rem) !important;
+            height: clamp(1rem, 2.3vh, 2.15rem) !important;
         }
         body.timer-fullscreen-active .activity-preset-btn {
-            font-size: 1.35rem !important;
-            padding: 0.65rem 1.6rem !important;
+            font-size: clamp(0.75rem, 1.55vh, 1.25rem) !important;
+            padding: clamp(0.25rem, 0.65vh, 0.6rem) clamp(0.65rem, 1.3vw, 1.4rem) !important;
             font-weight: 800 !important;
             border-radius: 9999px !important;
         }
 
-        /* [타이머 전체화면] "여유로운 진행 중" 배지 및 텍스트 초대형 확대 (2~3배) */
+        /* [타이머 전체화면] 중앙 타이머 래퍼가 남은 세로 공간을 유연하게 사용 */
+        body.timer-fullscreen-active #timer-center-wrap {
+            flex: 1 1 0% !important;
+            min-height: 0 !important;
+            margin: 0 !important;
+            padding: 0.25rem 0 !important;
+        }
+
+        /* [타이머 전체화면] "여유로운 진행 중" 배지 및 텍스트 */
         body.timer-fullscreen-active #timer-status-badge {
-            font-size: 2rem !important;
-            padding: 0.85rem 2.75rem !important;
-            border-width: 3px !important;
+            font-size: clamp(0.75rem, min(1.85vh, 3.2vw), 1.85rem) !important;
+            padding: clamp(0.2rem, 0.7vh, 0.75rem) clamp(0.7rem, 1.8vw, 2.5rem) !important;
+            border-width: 2.5px !important;
             border-radius: 9999px !important;
-            margin-top: 2rem !important;
+            margin-top: clamp(0.25rem, 1.2vh, 1.5rem) !important;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
         }
         body.timer-fullscreen-active #timer-status-badge svg,
         body.timer-fullscreen-active #timer-status-badge i {
-            width: 2.25rem !important;
-            height: 2.25rem !important;
+            width: clamp(0.85rem, 2vh, 2rem) !important;
+            height: clamp(0.85rem, 2vh, 2rem) !important;
         }
         body.timer-fullscreen-active #timer-status-text {
-            font-size: 2rem !important;
+            font-size: inherit !important;
             font-weight: 900 !important;
             letter-spacing: -0.02em !important;
         }
 
-        /* [타이머 전체화면] 타이머 숫자 및 SVG */
+        /* [타이머 전체화면] 타이머 숫자 및 SVG (하단 버튼이 절대 가려지지 않도록 뷰포트 높이/너비 비율 적용) */
         body.timer-fullscreen-active #timer-display {
-            font-size: 11rem !important;
+            font-size: clamp(2.5rem, min(11vh, 18vw), 9.5rem) !important;
             line-height: 1 !important;
         }
         body.timer-fullscreen-active #timer-section svg.transform {
-            width: 34rem !important;
-            height: 34rem !important;
+            width: min(44vh, 72vw, 32rem) !important;
+            height: min(44vh, 72vw, 32rem) !important;
         }
 
         /* [타이머 전체화면] 하단 프리셋 및 컨트롤 버튼 */
         body.timer-fullscreen-active .preset-btn,
         body.timer-fullscreen-active #custom-time-btn {
-            font-size: 1.35rem !important;
-            padding: 0.75rem 1.6rem !important;
+            font-size: clamp(0.75rem, 1.6vh, 1.25rem) !important;
+            padding: clamp(0.3rem, 0.75vh, 0.7rem) clamp(0.65rem, 1.3vw, 1.4rem) !important;
             font-weight: 800 !important;
         }
         body.timer-fullscreen-active #start-btn,
         body.timer-fullscreen-active #pause-btn,
         body.timer-fullscreen-active #stop-btn,
         body.timer-fullscreen-active #reset-btn {
-            font-size: 1.5rem !important;
-            padding: 1.25rem 1rem !important;
-            border-radius: 1.25rem !important;
+            font-size: clamp(0.85rem, 2.1vh, 1.5rem) !important;
+            padding: clamp(0.55rem, 1.4vh, 1.15rem) 0.5rem !important;
+            min-height: 44px !important;
+            border-radius: clamp(0.75rem, 1.5vh, 1.25rem) !important;
         }
 
         /* [뽑기 디스플레이 상태 제어] hidden 클래스가 모든 모드에서 확실하게 최우선 적용되도록 보장 */
@@ -450,31 +492,31 @@
             padding: 0.5rem 2rem !important;
         }
         body.draw-fullscreen-active #result-image-pane {
-            flex: 0 0 44% !important;
-            max-width: 46% !important;
+            flex: 0 0 42% !important;
+            max-width: 44% !important;
             height: 100% !important;
-            max-height: 72vh !important;
+            max-height: 58vh !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
         }
         body.draw-fullscreen-active #result-image-pane > div {
-            max-height: 70vh !important;
+            max-height: 56vh !important;
             border-radius: 2rem !important;
-            padding: 1.25rem !important;
+            padding: 1rem !important;
             background: rgba(255, 255, 255, 0.9) !important;
             border: 2px solid rgba(237, 227, 218, 0.9) !important;
             box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08) !important;
         }
         body.draw-fullscreen-active #result-avatar-img {
-            max-height: 65vh !important;
+            max-height: 52vh !important;
             object-fit: contain !important;
             opacity: 1 !important;
             filter: contrast(108%) saturate(120%) brightness(101%) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.12)) !important;
         }
         body.draw-fullscreen-active #result-name-pane {
-            flex: 1 1 54% !important;
-            max-width: 56% !important;
+            flex: 1 1 56% !important;
+            max-width: 58% !important;
             height: 100% !important;
             display: flex !important;
             flex-direction: column !important;
@@ -482,7 +524,7 @@
             justify-content: center !important;
         }
         body.draw-fullscreen-active #result-name-text {
-            font-size: clamp(7.5rem, 16vw, 16.5rem) !important;
+            font-size: clamp(2.75rem, min(14vw, 20vh), 16rem) !important;
             line-height: 0.95 !important;
             letter-spacing: -0.04em !important;
             font-weight: 950 !important;
@@ -543,26 +585,74 @@
             flex-shrink: 0 !important;
         }
         body.draw-fullscreen-active #draw-btn {
-            font-size: 2rem !important;
-            padding: 1.15rem 2rem !important;
-            border-radius: 1.25rem !important;
+            font-size: clamp(1rem, 2.5vh, 2rem) !important;
+            padding: clamp(0.6rem, 1.4vh, 1.15rem) 1.5rem !important;
+            min-height: 44px !important;
+            border-radius: clamp(0.85rem, 1.5vh, 1.25rem) !important;
             font-weight: 950 !important;
         }
         body.draw-fullscreen-active #mode-student-btn,
         body.draw-fullscreen-active #mode-group-btn {
-            font-size: 1.35rem !important;
-            padding: 0.75rem !important;
+            font-size: clamp(0.85rem, 1.9vh, 1.35rem) !important;
+            padding: clamp(0.4rem, 0.9vh, 0.75rem) !important;
             border-radius: 1.1rem !important;
         }
         body.draw-fullscreen-active #status-count-text,
+        body.draw-fullscreen-active #edit-list-btn,
         body.draw-fullscreen-active #card-reset-btn {
-            font-size: 1.25rem !important;
+            font-size: clamp(0.8rem, 1.7vh, 1.25rem) !important;
+        }
+        body.draw-fullscreen-active #edit-list-btn svg,
+        body.draw-fullscreen-active #card-reset-btn svg {
+            width: 1.15rem !important;
+            height: 1.15rem !important;
         }
 
                 /* 전체화면 시 헤더 숨김 및 컴팩트한 기본 화면 돌아가기 버튼 */
         body.timer-fullscreen-active header,
         body.draw-fullscreen-active header {
             display: none !important;
+        }
+
+        /* 전체화면 전용 화면 전환 바로가기 버튼 (기본 화면에서는 숨김) */
+        #timer-to-draw-btn,
+        #draw-to-timer-btn {
+            display: none !important;
+        }
+        body.timer-fullscreen-active #timer-to-draw-btn,
+        body.draw-fullscreen-active #draw-to-timer-btn {
+            display: inline-flex !important;
+        }
+
+        .fullscreen-shortcut-btn {
+            background: linear-gradient(135deg, #fff5ee 0%, #ffe6d6 100%) !important;
+            color: #7c2d08 !important;
+            border: 2px solid #f7c5a8 !important;
+            padding: 0.5rem 1rem !important;
+            font-size: 0.75rem !important;
+            font-weight: 800 !important;
+            box-shadow: 0 2px 10px rgba(255, 176, 136, 0.25) !important;
+            border-radius: 9999px !important;
+            align-items: center !important;
+            gap: 0.4rem !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease !important;
+        }
+        .fullscreen-shortcut-btn.is-mint {
+            background: linear-gradient(135deg, #f0fdf6 0%, #d8f5e5 100%) !important;
+            color: #11533e !important;
+            border: 2px solid #9de0bd !important;
+            box-shadow: 0 2px 10px rgba(103, 181, 121, 0.2) !important;
+        }
+        @media (min-width: 768px) {
+            .fullscreen-shortcut-btn {
+                font-size: 0.875rem !important;
+                padding: 0.5rem 1.25rem !important;
+            }
+        }
+        .fullscreen-shortcut-btn:hover {
+            filter: brightness(0.97);
+            transform: translateY(-1px);
         }
 
         .fullscreen-exit-mode-btn {
@@ -591,35 +681,35 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col justify-between select-none">
+<body class="h-screen h-[100dvh] w-screen overflow-hidden flex flex-col select-none">
 
     <div class="absolute inset-0 pastel-overlay pointer-events-none z-0"></div>
 
     <!-- 상단 고급 헤더 -->
-    <header class="w-full bg-white/90 backdrop-blur-md border-b border-[#ebdcd2] px-6 py-3.5 flex items-center justify-between shrink-0 z-20 shadow-xs">
-        <div class="flex items-center space-x-3.5">
-            <div class="w-11 h-11 rounded-2xl bg-[#FFE88A] border border-[#f5de7a] flex items-center justify-center text-xl shadow-xs">
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-[#ebdcd2] px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between shrink-0 z-20 shadow-xs">
+        <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-[#FFE88A] border border-[#f5de7a] flex items-center justify-center text-lg sm:text-xl shadow-xs shrink-0">
                 🏫
             </div>
-            <div>
-                <h1 class="text-base md:text-lg font-black text-[#3d3339] tracking-tight flex items-center gap-2">
+            <div class="min-w-0">
+                <h1 class="text-sm sm:text-base md:text-lg font-black text-[#3d3339] tracking-tight flex items-center gap-2 truncate">
                     스마트 교실 타이머
-                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dcf5e6] text-[#1e5a37] border border-[#a2e6b9]">동물의 숲 & 먼작귀 에디션 🍃🌸</span>
+                    <span class="hidden sm:inline-block text-xs font-semibold px-2 py-0.5 rounded-full bg-[#dcf5e6] text-[#1e5a37] border border-[#a2e6b9]">동물의 숲 & 먼작귀 에디션 🍃🌸</span>
                 </h1>
-                <p class="text-xs text-[#7d7077]">수업 집중 타이머 & 동물의 숲 · 먼작귀 캐릭터 랜덤 뽑기</p>
+                <p class="hidden sm:block text-xs text-[#7d7077] truncate">수업 집중 타이머 & 동물의 숲 · 먼작귀 캐릭터 랜덤 뽑기</p>
             </div>
         </div>
-        <div class="flex items-center space-x-2">
-            <button id="theme-quick-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#a3e2ca] hover:bg-[#f6fcf9] bg-white text-[#3d3339] px-3.5 py-2 rounded-full font-bold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer" title="배경 테마 변경 (계절 및 수업 상황)">
+        <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+            <button id="theme-quick-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#a3e2ca] hover:bg-[#f6fcf9] bg-white text-[#3d3339] px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-bold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer" title="배경 테마 변경 (계절 및 수업 상황)">
                 <span id="header-theme-icon" class="text-sm">🌸</span>
                 <span id="header-theme-name" class="hidden sm:inline text-xs font-bold text-[#44383f]">봄 & 벚꽃</span>
                 <span class="text-[10px] text-[#7d7077] font-semibold bg-[#f4ece5] px-1.5 py-0.5 rounded-md hidden md:inline">테마</span>
             </button>
-            <button id="fullscreen-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-4 py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
+            <button id="fullscreen-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
                 <i data-lucide="maximize" class="w-4 h-4 text-[#8a7a83]"></i>
                 <span class="hidden sm:inline">전체화면</span>
             </button>
-            <button id="settings-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-4 py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
+            <button id="settings-btn" class="flex items-center space-x-1.5 border border-[#e2d5cb] hover:border-[#c4b5aa] bg-white text-[#4a4046] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold shadow-2xs transition active:scale-95 text-xs md:text-sm cursor-pointer">
                 <i data-lucide="settings" class="w-4 h-4 text-[#8a7a83]"></i>
                 <span>항목 설정</span>
             </button>
@@ -627,10 +717,10 @@
     </header>
 
     <!-- 메인 대시보드 영역 -->
-    <main class="relative z-10 flex-1 w-full h-[calc(100vh-73px-48px)] p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch overflow-hidden max-w-[1440px] mx-auto">
+    <main class="relative z-10 flex-1 min-h-0 w-full p-2.5 sm:p-4 md:p-5 grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5 items-stretch overflow-y-auto lg:overflow-hidden max-w-[1440px] mx-auto">
         
         <!-- 좌측: 타이머 및 컨트롤 섹션 -->
-        <section id="timer-section" class="lg:col-span-8 flex flex-col items-center justify-between glass-card p-4 sm:p-5 md:p-6 lg:p-7 h-full overflow-y-auto transition-all duration-300">
+        <section id="timer-section" class="lg:col-span-8 flex flex-col items-center justify-between glass-card p-3 sm:p-4 md:p-5 lg:p-6 h-auto lg:h-full min-h-0 overflow-y-auto transition-all duration-300 gap-1.5 sm:gap-2">
             
             <!-- 활성화된 시각 확성기 상단 띠 배너 (글로 전달하는 조용한 안내) -->
             <div id="active-notice-banner" class="hidden w-full max-w-2xl mb-2 px-3.5 py-2 bg-gradient-to-r from-[#ffeaa7] to-[#ffd3b6] border-2 border-[#fff3cc] rounded-2xl shadow-xs flex items-center justify-between notice-pulse shrink-0">
@@ -643,14 +733,19 @@
                 </button>
             </div>
 
-            <!-- 타이머 섹션 상단 헤더 (전체화면 버튼 포함) -->
+            <!-- 타이머 섹션 상단 헤더 (전체화면 및 랜덤 뽑기 바로가기 버튼 포함) -->
             <div class="w-full max-w-2xl flex items-center justify-between mb-1.5 shrink-0">
                 <div class="flex items-center gap-2 font-black text-[#3d3339] text-sm md:text-base">
                     <i data-lucide="clock" class="w-4 h-4 md:w-5 md:h-5 text-[#11533e]"></i> 집중 교실 타이머
                 </div>
-                <button id="timer-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
-                    <span>🔍 타이머 전체화면</span>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button id="timer-to-draw-btn" class="fullscreen-shortcut-btn active:scale-95" title="랜덤 뽑기 전체화면으로 바로 이동">
+                        <span>🎲 랜덤 뽑기 바로가기</span>
+                    </button>
+                    <button id="timer-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
+                        <span>🔍 타이머 전체화면</span>
+                    </button>
+                </div>
             </div>
 
             <!-- 상단 바: 지금은 입력 & 활동 프리셋 -->
@@ -674,18 +769,18 @@
             </div>
 
             <!-- 중앙 타이머 및 SVG 원형 프로그레스 바 (화면 크기를 줄여도 버튼이 잘 보이도록 반응형 크기 최적화) -->
-            <div class="relative flex items-center justify-center my-auto py-1 sm:py-2 shrink-0">
-                <svg class="w-[min(54vw,14rem,28vh)] h-[min(54vw,14rem,28vh)] sm:w-[min(48vw,17rem,32vh)] sm:h-[min(48vw,17rem,32vh)] md:w-[min(44vw,20rem,36vh)] md:h-[min(44vw,20rem,36vh)] lg:w-[min(38vw,23rem,40vh)] lg:h-[min(38vw,23rem,40vh)] transform -rotate-90" viewBox="0 0 500 500">
+            <div id="timer-center-wrap" class="relative flex-1 min-h-0 w-full flex items-center justify-center my-0.5 py-1">
+                <svg class="w-[min(46vw,13rem,28vh)] h-[min(46vw,13rem,28vh)] sm:w-[min(40vw,16rem,30vh)] sm:h-[min(40vw,16rem,30vh)] md:w-[min(36vw,18rem,32vh)] md:h-[min(36vw,18rem,32vh)] lg:w-[min(32vw,21rem,34vh)] lg:h-[min(32vw,21rem,34vh)] transform -rotate-90" viewBox="0 0 500 500">
                     <circle cx="250" cy="250" r="220" stroke="#f5ede7" stroke-width="26" fill="none" />
                     <circle id="progress-bar" cx="250" cy="250" r="220" stroke="#C8F0E0" stroke-width="26" fill="none" stroke-linecap="round" stroke-dasharray="1382.3" stroke-dashoffset="0" class="transition-all duration-300 ease-linear" />
                 </svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                     <div id="timer-display-container">
-                        <div id="timer-display" class="font-mono text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#382f35] tracking-wider transition-all duration-200">05:00</div>
+                        <div id="timer-display" class="font-mono font-black text-[#382f35] tracking-wider transition-all duration-200">05:00</div>
                     </div>
                     <!-- 진행 상태 배지 (50%이상: #C8F0E0, 50~20%: #FFE88A, 20%이하: #FFB088) -->
-                    <div id="timer-status-badge" class="text-xs sm:text-sm font-bold mt-1.5 sm:mt-2 px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full shadow-2xs border transition-all duration-300 bg-[#C8F0E0] text-[#11533e] border-[#b0e6d2] flex items-center gap-1.5">
-                        <i data-lucide="clock" class="w-3.5 h-3.5"></i> <span id="timer-status-text">여유로운 진행 중</span>
+                    <div id="timer-status-badge" class="text-[11px] sm:text-xs md:text-sm font-bold mt-1 sm:mt-1.5 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-full shadow-2xs border transition-all duration-300 bg-[#C8F0E0] text-[#11533e] border-[#b0e6d2] flex items-center gap-1.5">
+                        <i data-lucide="clock" class="w-3 h-3 sm:w-3.5 sm:h-3.5"></i> <span id="timer-status-text">여유로운 진행 중</span>
                     </div>
                 </div>
             </div>
@@ -727,56 +822,65 @@
         </section>
 
         <!-- 우측: 랜덤 뽑기 통합 섹션 (학생/모둠 뽑기 + 귀여운 이미지 표시) -->
-        <section id="draw-section" class="lg:col-span-4 flex flex-col justify-between glass-card p-5 md:p-8 h-full overflow-y-auto transition-all duration-300">
+        <section id="draw-section" class="lg:col-span-4 flex flex-col justify-between glass-card p-3.5 sm:p-5 md:p-6 h-auto lg:h-full min-h-0 overflow-y-auto transition-all duration-300">
             
-            <div class="flex flex-col h-full justify-between">
-                <div>
+            <div class="flex flex-col h-full min-h-0 justify-between gap-3">
+                <div class="flex-1 min-h-0 flex flex-col">
                     <!-- 카드 상단 타이틀 및 모드 뱃지 -->
-                    <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center justify-between mb-3 shrink-0 gap-1.5 flex-wrap">
                         <h2 class="text-base md:text-lg font-black text-[#3d3339] flex items-center space-x-2">
                             <i data-lucide="dice-5" class="w-5 h-5 text-[#FFB088]"></i>
                             <span>랜덤 뽑기</span>
                         </h2>
-                        <div class="flex items-center space-x-2">
-                            <span id="mode-badge" class="text-xs bg-white border border-[#e4d8cf] text-[#4a4046] font-bold px-3 py-1 rounded-full shadow-2xs">👤 학생 모드</span>
-                            <button id="draw-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-3 py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
+                        <div class="flex items-center space-x-1.5 sm:space-x-2">
+                            <span id="mode-badge" class="text-xs bg-white border border-[#e4d8cf] text-[#4a4046] font-bold px-2.5 py-1 rounded-full shadow-2xs">👤 학생 모드</span>
+                            <button id="draw-to-timer-btn" class="fullscreen-shortcut-btn is-mint active:scale-95" title="타이머 전체화면으로 바로 이동">
+                                <span>⏱️ 타이머 바로가기</span>
+                            </button>
+                            <button id="draw-fullscreen-btn" class="flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full font-bold text-xs transition active:scale-95 shadow-2xs cursor-pointer">
                                 <span>🔍 뽑기 전체화면</span>
                             </button>
                         </div>
                     </div>
                     
                     <!-- 모드 선택 버튼 [👤 학생] [👥 모둠] -->
-                    <div class="grid grid-cols-2 gap-2 mb-3.5">
-                        <button id="mode-student-btn" class="btn-pastel-mint font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer">
+                    <div class="grid grid-cols-2 gap-2 mb-3 shrink-0">
+                        <button id="mode-student-btn" class="btn-pastel-mint font-bold py-2 sm:py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer">
                             <i data-lucide="user" class="w-4 h-4"></i><span>학생</span>
                         </button>
-                        <button id="mode-group-btn" class="bg-white hover:bg-[#faf5f1] text-[#4a4046] border border-[#e4d8cf] font-bold py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer shadow-2xs">
+                        <button id="mode-group-btn" class="bg-white hover:bg-[#faf5f1] text-[#4a4046] border border-[#e4d8cf] font-bold py-2 sm:py-2.5 px-3 rounded-2xl transition active:scale-95 flex items-center justify-center space-x-1.5 text-sm cursor-pointer shadow-2xs">
                             <i data-lucide="users" class="w-4 h-4 text-[#8a7a83]"></i><span>모둠</span>
                         </button>
                     </div>
 
-                    <!-- 남은 인원 / 모둠 현황 및 수동 초기화 -->
-                    <div class="flex items-center justify-between text-xs text-[#7d7077] mb-3 px-1">
+                    <!-- 남은 인원 / 모둠 현황 및 목록 수정 / 수동 초기화 -->
+                    <div class="flex items-center justify-between text-xs text-[#7d7077] mb-2.5 px-1 gap-2 flex-wrap shrink-0">
                         <span id="status-count-text" class="font-medium">남은 인원: 17명 / 전체 17명</span>
-                        <button id="card-reset-btn" class="text-[#c45e2c] hover:underline font-bold cursor-pointer flex items-center gap-1">
-                            <i data-lucide="refresh-cw" class="w-3 h-3"></i> 남은 목록 초기화
-                        </button>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button id="edit-list-btn" class="text-[#1b5935] hover:underline font-bold cursor-pointer flex items-center gap-1">
+                                <i data-lucide="pencil" class="w-3 h-3"></i> 목록 수정
+                            </button>
+                            <span class="text-[#dfd4cb]">|</span>
+                            <button id="card-reset-btn" class="text-[#c45e2c] hover:underline font-bold cursor-pointer flex items-center gap-1">
+                                <i data-lucide="refresh-cw" class="w-3 h-3"></i> 남은 목록 초기화
+                            </button>
+                        </div>
                     </div>
 
                     <!-- 랜덤 뽑기 디스플레이 카드 (학생 이름과 함께 동물의 숲 인기 주민 사진이 나오는 영역) -->
-                    <div id="mission-card" class="relative w-full min-h-[19.5rem] md:min-h-[22rem] h-auto bg-gradient-to-b from-white to-[#fbf8f5] border-2 border-[#ebdcd2] rounded-3xl flex flex-col items-center justify-center p-0 text-center shadow-xs cursor-pointer hover:border-[#67b579] transition-all transform hover:scale-[1.01] overflow-hidden">
+                    <div id="mission-card" class="relative w-full flex-1 min-h-[11.5rem] md:min-h-[13rem] bg-gradient-to-b from-white to-[#fbf8f5] border-2 border-[#ebdcd2] rounded-3xl flex flex-col items-center justify-center p-0 text-center shadow-xs cursor-pointer hover:border-[#67b579] transition-all transform hover:scale-[1.01] overflow-hidden">
                         
                         <!-- 초기 플레이스홀더 뷰 (기존 안내 문구) -->
-                        <div id="draw-placeholder" class="w-full h-full min-h-[19.5rem] md:min-h-[22rem] flex flex-col items-center justify-center transition-opacity duration-300 p-6 text-center">
-                            <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#e8f8ed] border-2 border-[#b6e8c4] flex items-center justify-center mb-2.5 shadow-inner">
-                                <span class="text-3xl md:text-4xl animate-bounce">🎤</span>
+                        <div id="draw-placeholder" class="w-full h-full flex-1 min-h-0 flex flex-col items-center justify-center transition-opacity duration-300 p-4 sm:p-6 text-center">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-[#e8f8ed] border-2 border-[#b6e8c4] flex items-center justify-center mb-2 shadow-inner">
+                                <span class="text-2xl sm:text-3xl md:text-4xl animate-bounce">🎤</span>
                             </div>
-                            <span id="mission-text" class="text-xl md:text-2xl font-black text-[#3d3339] tracking-wide">오늘의 발표 주인공 뽑기!</span>
-                            <span class="text-xs text-[#8a7b84] mt-2 font-medium">카드를 누르거나 아래 버튼을 클릭하세요</span>
+                            <span id="mission-text" class="text-lg sm:text-xl md:text-2xl font-black text-[#3d3339] tracking-wide">오늘의 발표 주인공 뽑기!</span>
+                            <span class="text-xs text-[#8a7b84] mt-1.5 font-medium">카드를 누르거나 아래 버튼을 클릭하세요</span>
                         </div>
 
                         <!-- 뽑기 결과 뷰 (좌측 캐릭터 전신 일러스트 + 우측 초대형 학생/모둠 이름 + 하단 캐릭터/말문구 일체형 캡슐) -->
-                        <div id="draw-result" class="hidden w-full h-full min-h-[19.5rem] md:min-h-[22rem] flex flex-col justify-between items-center py-3.5 px-3 sm:px-6 relative z-10" style="display: none;">
+                        <div id="draw-result" class="hidden w-full h-full flex-1 min-h-0 flex flex-col justify-between items-center py-2.5 sm:py-3.5 px-3 sm:px-6 relative z-10" style="display: none;">
                             
                             <!-- 상단 뱃지: 오늘의 당첨 주인공 표시 -->
                             <div class="result-top-badge relative z-10 pt-0.5 flex items-center justify-center flex-shrink-0">
@@ -820,8 +924,8 @@
                 </div>
 
                 <!-- 하단 실행 버튼 -->
-                <div class="mt-4">
-                    <button id="draw-btn" class="w-full btn-pastel-peach font-black py-3.5 md:py-4 px-6 rounded-2xl shadow-md transition active:scale-95 text-base md:text-lg flex items-center justify-center space-x-2 cursor-pointer">
+                <div class="shrink-0">
+                    <button id="draw-btn" class="w-full btn-pastel-peach font-black py-3 sm:py-3.5 md:py-4 px-6 rounded-2xl shadow-md transition active:scale-95 text-base md:text-lg flex items-center justify-center space-x-2 cursor-pointer">
                         <i data-lucide="dice-5" class="w-5 h-5 animate-spin" style="animation-duration: 3s;"></i>
                         <span>랜덤 뽑기 실행</span>
                     </button>
@@ -864,12 +968,9 @@
                 </button>
             </div>
 
-            <!-- 탭 전환 버튼 [명단 설정] [배경 테마] [알림음 볼륨] [동물의 숲 주민] -->
-            <div class="grid grid-cols-4 gap-1 p-1 bg-[#f7f2ed] rounded-2xl mb-4 shrink-0">
-                <button id="settings-tab-list-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center">
-                    👥 학생 명단
-                </button>
-                <button id="settings-tab-theme-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center flex items-center justify-center gap-1">
+            <!-- 탭 전환 버튼 [배경 테마] [알림음 볼륨] [캐릭터(34명)] -->
+            <div class="grid grid-cols-3 gap-1 p-1 bg-[#f7f2ed] rounded-2xl mb-4 shrink-0">
+                <button id="settings-tab-theme-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center flex items-center justify-center gap-1">
                     <span>🎨</span> 배경 테마
                 </button>
                 <button id="settings-tab-volume-btn" class="py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center flex items-center justify-center gap-1">
@@ -879,28 +980,9 @@
                     🐾 캐릭터(34명)
                 </button>
             </div>
-            
-            <!-- 탭 1: 학생 명단 & 모둠 수 -->
-            <div id="settings-tab-list" class="flex-1 flex flex-col overflow-y-auto">
-                <div class="mb-4">
-                    <label class="block text-xs font-bold text-[#7d7077] mb-1.5">👥 총 모둠 개수 설정</label>
-                    <input type="number" id="group-count-input" min="1" max="20" value="5" class="w-full p-3 border-2 border-[#ebdcd2] rounded-2xl font-bold text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb]">
-                </div>
 
-                <div class="flex-1 flex flex-col mb-4">
-                    <label class="block text-xs font-bold text-[#7d7077] mb-1.5">👤 학생 명단 편집 (줄바꿈으로 구분)</label>
-                    <textarea id="missions-textarea" class="w-full flex-1 p-4 border-2 border-[#ebdcd2] rounded-2xl font-medium text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb] resize-none text-sm leading-relaxed" rows="7"></textarea>
-                    <p class="text-xs text-[#a698a0] mt-1.5">※ 줄바꿈을 기준으로 학생 이름이 등록되며, 남은 뽑기 목록이 새로고침됩니다.</p>
-                </div>
-
-                <div class="flex space-x-3 shrink-0">
-                    <button id="save-missions-btn" class="flex-1 btn-pastel-mint font-bold py-3 px-4 rounded-2xl shadow transition cursor-pointer">저장하기</button>
-                    <button id="settings-cancel-btn" class="btn-pastel-white font-bold py-3 px-4 rounded-2xl transition cursor-pointer">취소</button>
-                </div>
-            </div>
-
-            <!-- 탭 2: 배경 테마 설정 (계절 및 수업 상황) -->
-            <div id="settings-tab-theme" class="hidden flex-1 flex flex-col overflow-y-auto">
+            <!-- 탭 1: 배경 테마 설정 (계절 및 수업 상황) -->
+            <div id="settings-tab-theme" class="flex-1 flex flex-col overflow-y-auto">
                 <div class="flex items-center justify-between mb-3 shrink-0">
                     <div>
                         <span class="text-xs font-bold text-[#3d3339] block">🎨 수업 상황 & 사계절 배경 테마</span>
@@ -1032,6 +1114,40 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- 뽑기 목록 수정 모달 (학생 명단 및 모둠 수 편집 - 전체화면 위에서도 동작하도록 최상위 z-index 적용) -->
+    <div id="edit-list-modal" class="fixed inset-0 bg-[#3d3339]/45 backdrop-blur-xs z-[100000] flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-3xl p-5 md:p-7 max-w-lg w-full shadow-2xl border-2 border-[#ebdcd2] flex flex-col max-h-[88vh]">
+            <div class="flex items-center justify-between mb-4 shrink-0">
+                <h3 class="text-lg font-black text-[#3d3339] flex items-center gap-2">
+                    <i data-lucide="clipboard-list" class="w-5 h-5 text-[#1b5935]"></i>
+                    뽑기 목록 수정
+                </h3>
+                <button id="edit-list-close-btn" class="text-[#7d7077] hover:text-[#3d3339] p-1.5 rounded-full hover:bg-[#faf6f3] transition cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="mb-4 shrink-0">
+                <label class="block text-xs font-bold text-[#7d7077] mb-1.5">👥 총 모둠 개수 설정</label>
+                <input type="number" id="group-count-input" min="1" max="20" value="5" class="w-full p-3 border-2 border-[#ebdcd2] rounded-2xl font-bold text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb]">
+            </div>
+
+            <div class="flex-1 flex flex-col mb-4 min-h-0">
+                <div class="flex items-center justify-between mb-1.5">
+                    <label class="block text-xs font-bold text-[#7d7077]">👤 학생 명단 편집 (줄바꿈으로 구분)</label>
+                    <span id="edit-list-count-badge" class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-[#e8f8ed] text-[#1b5935]">총 17명</span>
+                </div>
+                <textarea id="missions-textarea" class="w-full flex-1 p-4 border-2 border-[#ebdcd2] rounded-2xl font-medium text-[#3d3339] focus:outline-none focus:border-[#C8F0E0] bg-[#fffdfb] resize-none text-sm leading-relaxed" rows="8" placeholder="학생 이름을 한 줄에 한 명씩 입력하세요."></textarea>
+                <p class="text-xs text-[#a698a0] mt-1.5">※ 줄바꿈을 기준으로 학생 이름이 등록되며, 저장 시 남은 뽑기 목록이 새로고침됩니다.</p>
+            </div>
+
+            <div class="flex space-x-3 shrink-0">
+                <button id="save-missions-btn" class="flex-1 btn-pastel-mint font-bold py-3 px-4 rounded-2xl shadow transition cursor-pointer">저장하기</button>
+                <button id="edit-list-cancel-btn" class="btn-pastel-white font-bold py-3 px-4 rounded-2xl transition cursor-pointer">취소</button>
+            </div>
         </div>
     </div>
 
@@ -1452,6 +1568,7 @@
         const modeGroupBtn = document.getElementById('mode-group-btn');
         const modeBadge = document.getElementById('mode-badge');
         const statusCountText = document.getElementById('status-count-text');
+        const editListBtn = document.getElementById('edit-list-btn');
         const cardResetBtn = document.getElementById('card-reset-btn');
 
         const finishModal = document.getElementById('finish-modal');
@@ -1463,7 +1580,12 @@
         const settingsBtn = document.getElementById('settings-btn');
         const settingsModal = document.getElementById('settings-modal');
         const settingsCloseBtn = document.getElementById('settings-close-btn');
-        const settingsCancelBtn = document.getElementById('settings-cancel-btn');
+
+        // 뽑기 목록 수정 모달 DOM
+        const editListModal = document.getElementById('edit-list-modal');
+        const editListCloseBtn = document.getElementById('edit-list-close-btn');
+        const editListCancelBtn = document.getElementById('edit-list-cancel-btn');
+        const editListCountBadge = document.getElementById('edit-list-count-badge');
         const saveMissionsBtn = document.getElementById('save-missions-btn');
         const missionsTextarea = document.getElementById('missions-textarea');
         const groupCountInput = document.getElementById('group-count-input');
@@ -1501,11 +1623,9 @@
         const closeFullscreenOverlayBtn = document.getElementById('close-fullscreen-overlay-btn');
 
         // 설정 모달 탭 DOM
-        const settingsTabListBtn = document.getElementById('settings-tab-list-btn');
         const settingsTabThemeBtn = document.getElementById('settings-tab-theme-btn');
         const settingsTabVolumeBtn = document.getElementById('settings-tab-volume-btn');
         const settingsTabVillagersBtn = document.getElementById('settings-tab-villagers-btn');
-        const settingsTabList = document.getElementById('settings-tab-list');
         const settingsTabTheme = document.getElementById('settings-tab-theme');
         const settingsTabVolume = document.getElementById('settings-tab-volume');
         const settingsTabVillagers = document.getElementById('settings-tab-villagers');
@@ -2057,19 +2177,56 @@
         drawBtn.addEventListener('click', executeDraw);
         missionCard.addEventListener('click', executeDraw);
 
-        // 설정 모달
-        settingsBtn.addEventListener('click', () => {
-            missionsTextarea.value = students.join('\n');
-            groupCountInput.value = totalGroups;
+        // 설정 모달 열기/닫기
+        function openSettingsModal(defaultTab = 'theme') {
             settingsModal.classList.remove('hidden');
-        });
+            activateSettingsTab(defaultTab);
+        }
 
         const closeSettingsModal = () => {
             settingsModal.classList.add('hidden');
         };
 
+        settingsBtn.addEventListener('click', () => openSettingsModal('theme'));
         settingsCloseBtn.addEventListener('click', closeSettingsModal);
-        settingsCancelBtn.addEventListener('click', closeSettingsModal);
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) closeSettingsModal();
+        });
+
+        // 뽑기 목록 수정 모달 열기/닫기/저장
+        function updateEditListCountBadge() {
+            if (!editListCountBadge || !missionsTextarea) return;
+            const count = missionsTextarea.value
+                .split('\n')
+                .map(item => item.trim())
+                .filter(item => item.length > 0).length;
+            editListCountBadge.textContent = `총 ${count}명`;
+        }
+
+        function openEditListModal() {
+            if (isDrawing) return;
+            missionsTextarea.value = students.join('\n');
+            groupCountInput.value = totalGroups;
+            updateEditListCountBadge();
+            editListModal.classList.remove('hidden');
+            setTimeout(() => missionsTextarea.focus(), 50);
+        }
+
+        const closeEditListModal = () => {
+            editListModal.classList.add('hidden');
+        };
+
+        if (editListBtn) editListBtn.addEventListener('click', openEditListModal);
+        if (editListCloseBtn) editListCloseBtn.addEventListener('click', closeEditListModal);
+        if (editListCancelBtn) editListCancelBtn.addEventListener('click', closeEditListModal);
+        if (editListModal) {
+            editListModal.addEventListener('click', (e) => {
+                if (e.target === editListModal) closeEditListModal();
+            });
+        }
+        if (missionsTextarea) {
+            missionsTextarea.addEventListener('input', updateEditListCountBadge);
+        }
 
         saveMissionsBtn.addEventListener('click', () => {
             const textVal = missionsTextarea.value.trim();
@@ -2086,9 +2243,9 @@
             }
 
             saveState();
-            closeSettingsModal();
+            closeEditListModal();
             updateDrawUI();
-            showPlaceholder("설정이 저장되었습니다! ✨");
+            showPlaceholder("목록이 수정되었습니다! ✨");
         });
 
         // 직접 시간 입력 모달
@@ -2131,6 +2288,7 @@
         // 타이머 개별 전체화면 토글
         const timerSection = document.getElementById('timer-section');
         const timerFullscreenBtn = document.getElementById('timer-fullscreen-btn');
+        const timerToDrawBtn = document.getElementById('timer-to-draw-btn');
 
         const resetTimerBtnStyle = () => {
             timerFullscreenBtn.className = "flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-4 py-2 rounded-full font-bold text-xs md:text-sm transition active:scale-95 shadow-2xs cursor-pointer";
@@ -2156,6 +2314,7 @@
         // 뽑기 개별 전체화면 토글
         const drawSection = document.getElementById('draw-section');
         const drawFullscreenBtn = document.getElementById('draw-fullscreen-btn');
+        const drawToTimerBtn = document.getElementById('draw-to-timer-btn');
 
         const resetDrawBtnStyle = () => {
             drawFullscreenBtn.className = "flex items-center space-x-1.5 bg-white hover:bg-[#fbf7f4] text-[#4a4046] border border-[#e4d8cf] px-4 py-2 rounded-full font-bold text-xs md:text-sm transition active:scale-95 shadow-2xs cursor-pointer";
@@ -2177,6 +2336,17 @@
         };
 
         drawFullscreenBtn.addEventListener('click', () => toggleDrawFullscreen());
+
+        if (timerToDrawBtn) {
+            timerToDrawBtn.addEventListener('click', () => {
+                toggleDrawFullscreen();
+            });
+        }
+        if (drawToTimerBtn) {
+            drawToTimerBtn.addEventListener('click', () => {
+                toggleTimerFullscreen();
+            });
+        }
 
         // =========================================================
         // 4. 시각 확성기 (무음 대형 교실 안내판) 로직
@@ -2763,31 +2933,30 @@
         // 설정 모달 탭 전환 함수
         function activateSettingsTab(tabName) {
             const tabs = [
-                { name: 'list', btn: settingsTabListBtn, el: settingsTabList },
                 { name: 'theme', btn: settingsTabThemeBtn, el: settingsTabTheme },
                 { name: 'volume', btn: settingsTabVolumeBtn, el: settingsTabVolume },
                 { name: 'villagers', btn: settingsTabVillagersBtn, el: settingsTabVillagers }
             ];
+            const activeName = tabs.some(t => t.name === tabName) ? tabName : 'theme';
 
             tabs.forEach(t => {
                 if (!t.btn) return;
-                if (t.name === tabName) {
-                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center";
+                if (t.name === activeName) {
+                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs bg-white text-[#3d3339] shadow-2xs transition cursor-pointer text-center flex items-center justify-center gap-1";
                     if (t.el) t.el.classList.remove('hidden');
                 } else {
-                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center";
+                    t.btn.className = "py-2 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs text-[#7d7077] hover:text-[#3d3339] transition cursor-pointer text-center flex items-center justify-center gap-1";
                     if (t.el) t.el.classList.add('hidden');
                 }
             });
 
-            if (tabName === 'villagers') {
+            if (activeName === 'villagers') {
                 renderVillagersRoster();
-            } else if (tabName === 'theme') {
+            } else if (activeName === 'theme') {
                 renderThemeGrid();
             }
         }
 
-        settingsTabListBtn.addEventListener('click', () => activateSettingsTab('list'));
         if (settingsTabThemeBtn) {
             settingsTabThemeBtn.addEventListener('click', () => activateSettingsTab('theme'));
         }
@@ -2902,9 +3071,17 @@
             });
         }
 
-        // ESC 키로도 언제든 기본 화면 복귀 지원
+        // ESC 키로도 모달 닫기 및 기본 화면 복귀 지원
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+                if (editListModal && !editListModal.classList.contains('hidden')) {
+                    closeEditListModal();
+                    return;
+                }
+                if (settingsModal && !settingsModal.classList.contains('hidden')) {
+                    closeSettingsModal();
+                    return;
+                }
                 if (!announcementFullscreenOverlay.classList.contains('hidden')) {
                     closeFullscreenAnnouncement();
                     return;
