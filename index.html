@@ -102,9 +102,48 @@
             transition: all 0.15s ease-in-out;
             user-select: none;
         }
+        #timer-center-wrap {
+            min-height: 9.5rem;
+        }
+        #timer-center-wrap > svg {
+            width: min(64vw, 48vh, 30rem);
+            height: min(64vw, 48vh, 30rem);
+            max-width: 100%;
+            max-height: 100%;
+        }
         #timer-display {
-            font-size: clamp(2rem, min(7.8vh, 11vw), 5.25rem);
-            line-height: 1.05;
+            font-size: clamp(2.25rem, min(11vh, 14vw), 7rem);
+            line-height: 1;
+        }
+        @media (max-width: 1023px) {
+            body:not(.timer-fullscreen-active) #timer-center-wrap {
+                flex: 0 0 auto;
+                height: min(72vw, 48vh);
+                min-height: 13rem;
+            }
+        }
+        @supports (container-type: size) {
+            #timer-center-wrap {
+                container-type: size;
+            }
+            #timer-center-wrap > svg {
+                width: min(96cqw, 96cqh) !important;
+                height: min(96cqw, 96cqh) !important;
+            }
+            #timer-display {
+                font-size: clamp(2.25rem, calc(min(96cqw, 96cqh) * 0.23), 11.5rem) !important;
+                line-height: 1 !important;
+            }
+            #timer-status-badge {
+                font-size: clamp(0.7rem, calc(min(96cqw, 96cqh) * 0.052), 2rem) !important;
+                padding: clamp(0.2rem, calc(min(96cqw, 96cqh) * 0.018), 0.85rem) clamp(0.65rem, calc(min(96cqw, 96cqh) * 0.05), 2.5rem) !important;
+                margin-top: clamp(0.25rem, calc(min(96cqw, 96cqh) * 0.032), 1.75rem) !important;
+            }
+            #timer-status-badge svg,
+            #timer-status-badge i {
+                width: clamp(0.8rem, calc(min(96cqw, 96cqh) * 0.055), 2.1rem) !important;
+                height: clamp(0.8rem, calc(min(96cqw, 96cqh) * 0.055), 2.1rem) !important;
+            }
         }
         @media (max-width: 640px) {
             #start-btn, #pause-btn, #stop-btn, #reset-btn {
@@ -292,24 +331,16 @@
         /* [타이머 전체화면] 중앙 타이머 래퍼가 남은 세로 공간을 유연하게 사용 */
         body.timer-fullscreen-active #timer-center-wrap {
             flex: 1 1 0% !important;
-            min-height: 0 !important;
+            min-height: 9.5rem !important;
             margin: 0 !important;
             padding: 0.25rem 0 !important;
         }
 
         /* [타이머 전체화면] "여유로운 진행 중" 배지 및 텍스트 */
         body.timer-fullscreen-active #timer-status-badge {
-            font-size: clamp(0.75rem, min(1.85vh, 3.2vw), 1.85rem) !important;
-            padding: clamp(0.2rem, 0.7vh, 0.75rem) clamp(0.7rem, 1.8vw, 2.5rem) !important;
             border-width: 2.5px !important;
             border-radius: 9999px !important;
-            margin-top: clamp(0.25rem, 1.2vh, 1.5rem) !important;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
-        }
-        body.timer-fullscreen-active #timer-status-badge svg,
-        body.timer-fullscreen-active #timer-status-badge i {
-            width: clamp(0.85rem, 2vh, 2rem) !important;
-            height: clamp(0.85rem, 2vh, 2rem) !important;
         }
         body.timer-fullscreen-active #timer-status-text {
             font-size: inherit !important;
@@ -317,14 +348,16 @@
             letter-spacing: -0.02em !important;
         }
 
-        /* [타이머 전체화면] 타이머 숫자 및 SVG (하단 버튼이 절대 가려지지 않도록 뷰포트 높이/너비 비율 적용) */
-        body.timer-fullscreen-active #timer-display {
-            font-size: clamp(2.5rem, min(11vh, 18vw), 9.5rem) !important;
-            line-height: 1 !important;
-        }
-        body.timer-fullscreen-active #timer-section svg.transform {
-            width: min(44vh, 72vw, 32rem) !important;
-            height: min(44vh, 72vw, 32rem) !important;
+        /* [타이머 전체화면] 타이머 숫자 및 SVG (남은 세로/가로 공간 전체를 최대한 채우되 하단 버튼 비침 방지) */
+        @supports not (container-type: size) {
+            body.timer-fullscreen-active #timer-display {
+                font-size: clamp(2.75rem, min(14vh, 20vw), 11.5rem) !important;
+                line-height: 1 !important;
+            }
+            body.timer-fullscreen-active #timer-center-wrap > svg {
+                width: min(64vh, 84vw) !important;
+                height: min(64vh, 84vw) !important;
+            }
         }
 
         /* [타이머 전체화면] 하단 프리셋 및 컨트롤 버튼 */
@@ -768,9 +801,9 @@
                 </div>
             </div>
 
-            <!-- 중앙 타이머 및 SVG 원형 프로그레스 바 (화면 크기를 줄여도 버튼이 잘 보이도록 반응형 크기 최적화) -->
-            <div id="timer-center-wrap" class="relative flex-1 min-h-0 w-full flex items-center justify-center my-0.5 py-1">
-                <svg class="w-[min(46vw,13rem,28vh)] h-[min(46vw,13rem,28vh)] sm:w-[min(40vw,16rem,30vh)] sm:h-[min(40vw,16rem,30vh)] md:w-[min(36vw,18rem,32vh)] md:h-[min(36vw,18rem,32vh)] lg:w-[min(32vw,21rem,34vh)] lg:h-[min(32vw,21rem,34vh)] transform -rotate-90" viewBox="0 0 500 500">
+            <!-- 중앙 타이머 및 SVG 원형 프로그레스 바 (하단 버튼을 가리지 않으면서 남은 공간을 최대한 크게 채움) -->
+            <div id="timer-center-wrap" class="relative flex-1 min-h-0 w-full flex items-center justify-center my-0.5 py-0.5">
+                <svg class="transform -rotate-90" viewBox="0 0 500 500">
                     <circle cx="250" cy="250" r="220" stroke="#f5ede7" stroke-width="26" fill="none" />
                     <circle id="progress-bar" cx="250" cy="250" r="220" stroke="#C8F0E0" stroke-width="26" fill="none" stroke-linecap="round" stroke-dasharray="1382.3" stroke-dashoffset="0" class="transition-all duration-300 ease-linear" />
                 </svg>
